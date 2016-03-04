@@ -1,7 +1,17 @@
 var engineerText = "Trust me, I'm an Engineer but...";
-var artistText = "I closed my eyes in order to See";
+var artistText = "I also play some music";
 var greetingText = "Hi, I'm John and...";
 $(document).ready(function(){
+$.material.init();
+ $('.chart').easyPieChart({
+           animate: 2000,
+			barColor: '#69c',
+			trackColor: '#ace',
+			scaleColor: false,
+			lineWidth: 10,
+			trackWidth: 10,
+			lineCap: 'butt'
+    });
 
 setCoverPageHeight();
 bindPlayButton();
@@ -13,11 +23,11 @@ console.log(scrollDistance);
 
 if (scrollDistance<100){
 	$("#greeting").text(greetingText);
-	$(".intro-quote").css("background-color","rgba(240, 173, 78, 0.7)");
+	
 }
 if (scrollDistance<=$(window).height() && scrollDistance>=100){
 $("#greeting").text(engineerText);
-$(".intro-quote").css("background-color","#FF9800");
+
 }
 	
 if (scrollDistance>$(window).height())
@@ -38,7 +48,7 @@ var windowHeight = $(window).height();
 var windowWidth = $("#video-wrapper").width();
 
 $("#video-harmonica").prop("width","100%");
-$("#video-harmonica").prop("height",0.45*windowHeight);
+$("#video-harmonica").prop("height",0.35*windowHeight);
 
 $("#video-harmonica").prop("src","https://www.youtube.com/embed/W7x8KHzi4kc?wmode=transaparent&amp;autoplay=1")
 
@@ -54,10 +64,12 @@ $("#video-wrapper").show();
 function setCoverPageHeight(){
 var windowHeight = $(window).height();
 var windowWidth = $(window).width();
+var img = document.getElementById('profile-engineer'); 
+var imgHeight = img.clientHeight;
 if ($(".content").length)
 {
 	$(".content").css("height",windowHeight);
-	$("#content-engineer").css("height",0.3*windowHeight);
+	$("#content-engineer").css("height",0.7*imgHeight);
 
 	$(".video-pre").css("height",windowHeight);
 

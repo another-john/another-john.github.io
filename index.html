@@ -1,89 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>BaiXiao The Engineer</title>
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/bootstrap-theme.min.css">
-<link rel="stylesheet" href="css/homepage.css">
-<link href="https://fonts.googleapis.com/css?family=Dancing+Script:700" rel="stylesheet" type="text/css">
-<script src="js/jquery.min.js"></script>
-<script src="js/jquery-ui.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/homepage.js"></script>
-</head>
-
-<body style="">
-<div class="container-fluid canvas">
-
-	<div class="intro">
-			<div class="content intro-cover">
-				   <div class="row">
-         <div class=" col-md-4 col-md-offset-4 col-xs-12 intro-quote text-center scrollto" id="scrolldown"data-scrolltarget="#content-engineer">
-				<div class="intro-greeting-1" id="greeting">Hi, I'm John and...</div>
-				
-		
-            <div class="intro-scroll">
-				<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <title>BaiXiao The Engineer</title>
+      <link rel="stylesheet" href="css/bootstrap.min.css">
+      <link rel="stylesheet" href="css/homepage.css">
+      <link href="dist/css/bootstrap-material-design.css" rel="stylesheet">
+      <link href="dist/css/ripples.min.css" rel="stylesheet">
+      <script src="js/jquery.min.js"></script>
+      <script src="js/jquery-ui.min.js"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <script src="js/homepage.js"></script>
+      <script src="dist/js/ripples.min.js"></script>
+      <script src="dist/js/material.min.js"></script>
+      <script src="dist/js/jquery.easypiechart.min.js"></script>
+   </head>
+   <body style="">
+      <div class="container-fluid canvas">
+         <div class="intro">
+            <div class="content intro-cover">
+               <div class="row">
+                  <div class=" col-md-4 col-md-offset-4 col-xs-12 intro-quote text-center scrollto" id="scrolldown"data-scrolltarget="#content-engineer">
+                     <div class="intro-greeting-1" id="greeting">Hi, I'm John and...</div>
+                     <div class="intro-scroll">
+                        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                     </div>
+                  </div>
+               </div>
             </div>
-   
          </div>
-</div>
-			</div>
-	</div>
+         <div class="container-fluid">
+            <div class="row" id="content-engineer">
+               <div class=" col-xs-8 col-xs-offset-2 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4 pro-pic">
+                  <div class="pic-container">
+                     <img src="./img/engineer.jpg" alt="" id="profile-engineer" class="img-circle" width="100%" style="margin-bottom: 20px">
+                  </div>
+               </div>
+            </div>
+           
+            <div class="row" id="content-experience">
+               <div class="about-me col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
+                   <div class="work-experience" id="work-skills">
+                    
+                     <div class="work-details col-xs-12 col-sm-12 col-md-10  col-md-offset-1 col-lg-10 col-lg-offset-1">
+                        <div class="panel panel-skills">
+                           <div class="panel-heading">
+                              <h3 class="panel-title"> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Skills</h3>
+                           </div>
+                           <div class="panel-body container-fluid row">
+                           <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 skill-chart">
+                         
+                               <span class="chart" data-percent="86">
+                                  <span class="percent">Java</span>
+                              
+                               </span>
+                             
+
+                           </div>
+                                <div class="col-xs-6 col-sm-6 col-md-2   col-lg-2 skill-chart">
+                         
+                               <span class="chart" data-percent="86">
+                                  <span class="percent">Spring MVC</span>
+                              
+                               </span>
+                             
+
+                           </div>
+                                      <div class="col-xs-6 col-sm-6 col-md-2   col-lg-2 skill-chart">
+                         
+                               <span class="chart" data-percent="86">
+                                  <span class="percent">Hibernate</span>
+                              
+                               </span>
+                             
+
+                           </div>
+                                      <div class="col-xs-6 col-sm-6 col-md-2   col-lg-2 skill-chart">
+                         
+                               <span class="chart" data-percent="86">
+                                  <span class="percent">JavaScript</span>
+                              
+                               </span>
+                             
+
+                           </div>
+                                      <div class="col-xs-6 col-sm-6 col-md-2   col-lg-2 skill-chart">
+                         
+                               <span class="chart" data-percent="86">
+                                  <span class="percent">Python</span>
+                              
+                               </span>
+                             
+
+                           </div>
+                                            <div class="col-xs-6 col-sm-6 col-md-2   col-lg-2 skill-chart">
+                         
+                               <span class="chart" data-percent="86">
+                                  <span class="percent">Bootstrap</span>
+                              
+                               </span>
+                             
+
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="work-experience" id="work-accenture">
+                     <div class="work-period col-xs-12 col-sm-12 col-md-2 col-md-offset-1 col-lg-2 col-lg-offset-1">
+                      
+                        <div class="panel-body">
+                           <img src="./img/accenture-logo.jpg" width="100%"alt="...">
+                         </div>
+                        </div>
+                  
+                     <div class="work-details col-xs-12 col-sm-12 col-md-7 col-md-offset-1 col-lg-7 col-lg-offset-1">
+                        <div class="panel panel-primary">
+                           <div class="panel-heading">
+                              <h3 class="panel-title row" >
+                              <p class="col-xs-12 col-sm-12 col-md-8 col-lg-8">Project #1: Government Online Portal featuring one-step citizen datastore</p>
+                              <p class="col-xs-12 col-sm-12 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1 period">Jun 2015 - Present</p>
+                              </h3>
+
+                           </div>
+                           <div class="panel-body">
+                              <p><i> Integration Developer</i>
+                              <p>
+                              <p><b>Solely</b> in charge of the implementation and integration of the portal's internal admin module</p>
+                              <p><b>Initiated</b> the migration of the jQuery based public facing single-page-application to react.js which features high re-usability, strong cohesion and loose coupling</p>
+                              <p><b>Proactively</b> involve in DevOps after applications go live; by utilizing maven-war-plugin for automation of deployment resources and configure files in different environment, improved efficiency by 50% </p>
+                              <p><b>Consistently</b> share new technology and recommend best practices with colleagues and contribute to company's Knowledge Exchange</p>
+                           </div>
+                        </div>
+                        <div class="panel panel-primary">
+                           <div class="panel-heading">
+                              <h3 class="panel-title row">
+
+                              <p class="col-xs-12 col-sm-12 col-md-8 col-lg-8">Project #2: Government Online Portal facilitating corporate e-services</p>
+                              <p class="col-xs-12 col-sm-12 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1 period">Feb 2016 - Present</p>
+                              </h3>
 
 
 
+                           </div>
+                           <div class="panel-body">
+                              <p><i> UI Developer  </i></p>
+                              <p><b>Act</b> as the core developer to provide expertise and insight on solving backwards cross-browser compatibility issues with IE7/8 and Firefox31</p>
+                           </div>
+                        </div>
+                        <div class="panel panel-primary">
+                           <div class="panel-heading">
+                              <h3 class="panel-title row">
+                              <p class="col-xs-12 col-sm-12 col-md-8 col-lg-8">Project #3: Blueprint for Mainframe Modernization to Java</p>
+                              <p class="col-xs-12 col-sm-12 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1 period">Mar 2015 - Jun 2015</p>
+                              </h3>
+                           </div>
+                           <div class="panel-body">
+                              <p><i>  Technical Analyst</i></p>
+                              <p><b> Designed </b>and implemented a prototype to modernize COBOL programs from IBM CICS Transaction Server to Java on WebSphere Liberty and OSGI Server profile while maintaining transaction integrity </p>
+                              <p><b>Built</b> a real-time monitoring demo web application with modern UI theme(Metro) to present the features of the prototype </p>
+                              <p><b>Received</b> high appraisals by clients for the flexibility and user-friendliness of the prototype</p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="work-experience" id="work-micron">
+                     <div class="work-period col-xs-12 col-sm-12 col-md-2 col-md-offset-1 col-lg-2 col-lg-offset-1">
+                  
+                        <div class="panel-body">
+                           <img src="./img/micron-logo.jpg" width="100%"alt="...">
+                         </div>
+                  
+                     </div>
+                     <div class="work-details col-xs-12 col-sm-12 col-md-7 col-md-offset-1 col-lg-7 col-lg-offset-1">
+                        <div class="panel panel-info">
+                           <div class="panel-heading">
+                              <h3 class="panel-title row">
+                              <p class="col-xs-12 col-sm-12 col-md-8 col-lg-8">OCT Test Engineer</p>
+                              <p class="col-xs-12 col-sm-12 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1 period">Jun 2014 - Feb 2015</p>
 
-<div class="content container-fluid">
-   <div class="row" id="content-engineer">
-   <div class=" col-xs-12 col-sm-12 col-md-4 col-lg-4 col-md-offset-1 col-lg-offset-1 proPic">
-                  <img src="./img/engineer.jpg" alt="" class="img-circle topmar" width="100%">
-                </div>
+                              </h3>
+                           </div>
+                           <div class="panel-body">
+                              <p><b>Liaised</b> with global engineering teams on full Software Development Life Cycle (SDLC)under Unix systems in achieving minimized test time and optimal equipment efficiency</p>
+                              <p><b>Conducted</b> data analysis on unqualified DRAM product from various complicated test data sources and disposed product following statistical process control(SPC) rules</p>
+                              <p><b>Provided</b> 24 x 7 on-call duty for over-night production testing missions, including but not limited to assign tasks to technicians and answer phone-call with immediate data analysis </p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="work-experience" id="work-tsp">
+                     <div class="work-period col-xs-12 col-sm-12 col-md-2 col-md-offset-1 col-lg-2 col-lg-offset-1">
+                        
+                        <div class="panel-body">
+                           <img src="./img/tsp-logo.png" width="100%"alt="...">
+                         </div>
+                     </div>
+                     <div class="work-details col-xs-12 col-sm-12 col-md-7 col-md-offset-1 col-lg-7 col-lg-offset-1">
+                        <div class="panel panel-default">
+                           <div class="panel-heading">
+                              <h3 class="panel-title  row">
+                               <p class="col-xs-12 col-sm-12 col-md-8 col-lg-8">Web Developer Intern</p>
+                              <p class="col-xs-12 col-sm-12 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1 period">Jun 2013 - Aug 2013</p>
 
-
-   </div>
- 
-   </div>
-
-<div class="content container-fluid" id="content-artist">
-   <div class="row">
-   
-
-
-
-
-
-   <div class="video">
-      <div class="video-pre video-pre-artist col-md-6 col-md-offset-6 col-sm-12 com-xs-12 ">
-      
-         <span class="glyphicon glyphicon-play play-button play-button-artist" aria-hidden="true"></span><p class="play-text-engineer play-text-artist col-md-3 col-md-offset-1 col-sm-3 col-sm-offset-3 col-xs-3 col-xs-offset-3">Musician</p>
-         
-
+                              </h3>
+                           </div>
+                           <div class="panel-body">
+                              <p><b>Developed</b> the message queuing mechanism based on ØMQ (using Python) for the cloud computing application, with an increased distributed communication efficiency by 100%</p>
+                              
+                              <p><b>Developed</b> a new synchronization function based on the original application, achieving over 200 cloud nodes executing and reporting simultaneously with involvement on both front-end and back-end features</p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="content container-fluid" id="content-artist">
+            <div class="row">
+               <div class="video">
+                  <div class="video-pre video-pre-artist col-md-6 col-md-offset-6 col-sm-12 com-xs-12 ">
+                     <span class="glyphicon glyphicon-play play-button play-button-artist" aria-hidden="true"></span>
+                     <p class="play-text-engineer play-text-artist col-md-3 col-md-offset-1 col-sm-3 col-sm-offset-3 col-xs-3 col-xs-offset-3">Musician</p>
+                  </div>
+                  <div class="video-pre col-md-6 col-sm-12 com-xs-12 " id="video-wrapper" style="display:none">
+                     <iframe  id="video-harmonica" src=""  frameborder="0" allowfullscreen></iframe>
+                  </div>
+               </div>
+            </div>
+         </div>
       </div>
-      
-      <div class="video-pre col-md-6 col-sm-12 com-xs-12 " id="video-wrapper" style="display:none">
-      
-            <iframe  id="video-harmonica" src=""  frameborder="0" allowfullscreen></iframe>
-      
-      
-            
-
-
-      </div>
-   
-     
-
-      </div>
-   </div>
- 
-   </div>
-
-
-</div><!--container-fluid-->
-
-
-
-</body>
+      <!--container-fluid-->
+   </body>
 </html>

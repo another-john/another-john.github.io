@@ -6,12 +6,34 @@ position:relative;
 color:white;
 }
 
-
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2) {
 .intro-greeting-1{
 font-family: 'Dancing Script', cursive;
-font-size: 32px;
-line-height: 32px;
+font-size: 18px;
+line-height: 18px;
 }
+}
+
+
+@media screen 
+  and (min-device-width: 992px) 
+  and (-webkit-min-device-pixel-ratio: 1) { 
+.panel-title p.period{
+
+	text-align: right;
+}
+.intro-greeting-1{
+font-family: 'Dancing Script', cursive;
+font-size: 28px;
+line-height: 28px;
+}
+
+
+}
+
 
 .intro-quote{
 bottom:0px;
@@ -23,7 +45,7 @@ padding-left:15px;
 padding-right:15px;
 padding-top:15px;
 padding-bottom: -5px;
-background-color:rgba(240, 173, 78, 0.7);
+background-color:#FF9800;
 border-radius: 55px;
 cursor: pointer;
 }
@@ -31,16 +53,25 @@ cursor: pointer;
 .intro-quote:hover{
 font-size: 24px;
 line-height: 24px;
-
 border:solid 6px;
+}
+
+.pro-pic{
+margin-top:20px;
+}
+.pic-container{
+
+	  display:table-cell;
+    vertical-align:middle;
+    text-align:center;
 }
 
 
 
+.panel-skills .panel-heading{
 
-
-
-
+	background-color: #337ab7 !important;
+}
 
 
 .container-fluid {
@@ -55,7 +86,8 @@ position:relative;
 height:100%;
 }
 #content-engineer{
-background-color: #0097A7;
+background:url(../img/engineering-background-2.jpg);
+background-size: cover;
 }
 
 #content-artist{
@@ -63,9 +95,6 @@ background-color: #00BCD4;
 }
 
 
-p,a{
-	color:#f0ad4e;
-}
 .canvas{
 padding:0;
 left:0;
@@ -125,7 +154,43 @@ bottom:0;
 left:0;
 position:absolute;
 }
+.work-period{
 
-.img-circle {
-    border-radius: 50%;
+	padding: 0px !important;
 }
+
+.chart {
+  position: relative;
+  display: inline-block;
+  width: 110px;
+  height: 110px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+.chart canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.percent {
+  display: inline-block;
+  line-height: 110px;
+  z-index: 2;
+}
+.percent:after {
+  
+  margin-left: 0.1em;
+  font-size: .8em;
+}
+
+.panel-title p{
+
+	padding-left: 0px !important;
+}
+.skill-chart{
+
+	max-height: 160px !important;
+	margin-top: -40px;
+}
+
