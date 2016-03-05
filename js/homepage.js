@@ -54,23 +54,22 @@ else {
 
 function bindPlayButton() {
 
-$(document).on('click','.play-button-artist',function(){
-
-
 var windowHeight = $(window).height();
 var windowWidth = $("#video-wrapper").width();
 
-$("#video-harmonica").prop("width","100%");
-$("#video-harmonica").prop("height",0.35*windowHeight);
+$(".video-frame").prop("width","100%");
+$(".video-frame").prop("height",0.35*windowHeight);
 
-$("#video-harmonica").prop("src","https://www.youtube.com/embed/W7x8KHzi4kc?wmode=transaparent&amp;autoplay=1")
-
-$(this).parent().hide();
 $("#video-wrapper").show();
 
 
-});
+$("#video-harmonica").prop("src","https://www.youtube.com/embed/W7x8KHzi4kc?wmode=transaparent&amp;");
 
+$("#video-guitar").prop("src","https://www.youtube.com/embed/Bbh-WArxP48?wmode=transaparent&amp;");
+
+$("#video-guitar-harmonica").prop("src","https://www.youtube.com/embed/jAbYthcFLHc?wmode=transaparent&amp;");
+console.log($("#scrolldown").height());
+$("#video-margin").prop("height",$("#scrolldown").height());
 
 }
 
