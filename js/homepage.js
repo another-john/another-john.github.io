@@ -30,17 +30,18 @@ bindScrollAction();
 
 $( window ).scroll(function() {
 var scrollDistance = $(document).scrollTop();
-//console.log(scrollDistance<=$("#engineer-container").height());
+if($("#content-engineer").height()<5 || $("#content-artist").height()<5)
+setBackgroundHeight();
 if (scrollDistance<100){
 	$("#greeting").text(greetingText);
 	$("#scrolldown").data("scrolltarget","#content-engineer");
-	
+
 }
 else if (scrollDistance<=$("#engineer-container").height() && scrollDistance>=100){
 $("#greeting").text(engineerText);
 $("#scrolldown").data("scrolltarget","#content-artist");
 }
-	
+
 else {
 	$("#greeting").text(artistText);
 	$("#scrolldown").data("scrolltarget","#content-engineer");
@@ -68,38 +69,36 @@ $("#video-harmonica").prop("src","https://www.youtube.com/embed/W7x8KHzi4kc?wmod
 $("#video-guitar").prop("src","https://www.youtube.com/embed/Bbh-WArxP48?wmode=transaparent&amp;");
 
 $("#video-guitar-harmonica").prop("src","https://www.youtube.com/embed/jAbYthcFLHc?wmode=transaparent&amp;");
-console.log($("#scrolldown").height());
+
 $("#video-margin").prop("height",$("#scrolldown").height());
 
 }
+function setBackgroundHeight(){
+
+  var windowHeight = $(window).height();
+  var windowWidth = $(window).width();
+  var imgEngineer = document.getElementById('profile-engineer');
+  var imgEngineerHeight = imgEngineer.clientHeight;
+  $("#content-engineer").css("height",imgEngineerHeight);
+  var imgArtist = document.getElementById('profile-artist');
+  var imgArtistHeight = imgEngineer.clientHeight;
+  $("#content-artist").css("height",imgArtistHeight);
+
+}
+
 
 function setCoverPageHeight(){
 var windowHeight = $(window).height();
-var windowWidth = $(window).width();
-var imgEngineer = document.getElementById('profile-engineer'); 
-var imgEngineerHeight = imgEngineer.clientHeight;
-$("#content-engineer").css("height",imgEngineerHeight);
-var imgArtist = document.getElementById('profile-artist'); 
-var imgArtistHeight = imgEngineer.clientHeight;
-$("#content-artist").css("height",imgArtistHeight);
-
-
 
 if ($(".content").length)
 {
 	$(".content").css("height",windowHeight);
-	
-
-
 	$(".video-pre").css("height",windowHeight);
-
-}	
-
 
 }
 
 
-
+}
 
 function stopNativeScroll(){
 

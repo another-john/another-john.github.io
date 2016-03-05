@@ -6,8 +6,8 @@ position:relative;
 color:white;
 }
 
-@media only screen 
-  and (min-device-width: 320px) 
+@media only screen
+  and (min-device-width: 320px)
   and (max-device-width: 568px)
   and (-webkit-min-device-pixel-ratio: 2) {
 .intro-greeting-1{
@@ -18,9 +18,9 @@ line-height: 18px;
 }
 
 
-@media screen 
-  and (min-device-width: 992px) 
-  and (-webkit-min-device-pixel-ratio: 1) { 
+@media screen
+  and (min-device-width: 992px)
+  and (-webkit-min-device-pixel-ratio: 1) {
 .panel-title p.period{
 
 	text-align: right;
@@ -180,7 +180,7 @@ position:absolute;
   z-index: 2;
 }
 .percent:after {
-  
+
   margin-left: 0.1em;
   font-size: .8em;
 }
@@ -209,7 +209,7 @@ position:absolute;
 
 .video-container{
 
-	
+
  margin: 0px 15px 15px 15px;
 
    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
