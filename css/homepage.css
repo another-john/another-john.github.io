@@ -11,7 +11,7 @@ color:white;
   and (max-device-width: 568px)
   and (-webkit-min-device-pixel-ratio: 2) {
 .intro-greeting-1{
-font-family: 'Dancing Script', cursive;
+font-family: 'Inconsolata';
 font-size: 18px;
 line-height: 18px;
 }
@@ -26,7 +26,7 @@ line-height: 18px;
 	text-align: right;
 }
 .intro-greeting-1{
-font-family: 'Dancing Script', cursive;
+font-family: 'Inconsolata';
 font-size: 28px;
 line-height: 28px;
 }
