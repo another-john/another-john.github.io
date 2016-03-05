@@ -86,12 +86,13 @@ position:relative;
 height:100%;
 }
 #content-engineer{
-background:url(../img/engineering-background-2.jpg);
+background:url(../img/engineering-background.JPG);
 background-size: cover;
 }
 
 #content-artist{
-background-color: #00BCD4;
+background:url(../img/artist-background-4.JPG);
+background-size: cover;
 }
 
 
