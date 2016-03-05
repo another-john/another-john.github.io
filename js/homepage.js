@@ -19,7 +19,7 @@ bindScrollAction();
 
 $( window ).scroll(function() {
 var scrollDistance = $(document).scrollTop();
-console.log(scrollDistance);
+//console.log(scrollDistance);
 
 if (scrollDistance<100){
 	$("#greeting").text(greetingText);
@@ -66,10 +66,13 @@ var windowHeight = $(window).height();
 var windowWidth = $(window).width();
 var img = document.getElementById('profile-engineer'); 
 var imgHeight = img.clientHeight;
+$("#content-engineer").css("height",0.7*imgHeight);
+
 if ($(".content").length)
 {
 	$(".content").css("height",windowHeight);
-	$("#content-engineer").css("height",0.7*imgHeight);
+	
+
 
 	$(".video-pre").css("height",windowHeight);
 

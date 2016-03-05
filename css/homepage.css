@@ -193,4 +193,10 @@ position:absolute;
 	max-height: 160px !important;
 	margin-top: -40px;
 }
+.company-logo{
 
+ margin: 0px 15px 15px 15px;
+
+   -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
+     box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12)
+}
