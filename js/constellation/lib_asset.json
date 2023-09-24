@@ -1,0 +1,7 @@
+{
+  "isSdk": true,
+  "isDevServerMode": false,
+  "externals": [],
+  "entry": [],
+  "prerequisite": [{ "constellation-core.6d9a4d2b.js": "" }]
+}
