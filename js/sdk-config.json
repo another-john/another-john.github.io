@@ -4,15 +4,14 @@
     "authConfig_comment": "Optional Full paths to Infinity server OAuth endpoints (Only needed if using custom OAuth service)",
     "authConfig_comment2": "Optional attributes are: authorize, token, revoke, redirectUri, authService, silentTimeout, iframeLoginUI",
     "authService": "pega",
-        "authorize":"https://commerciallending.pegatsdemo.com/prweb/PRRestService/oauth2/v1/authorize",
-    "token":"https://commerciallending.pegatsdemo.com/prweb/PRRestService/oauth2/v1/token",
-    "iframeLoginUI":true,
 
+    "redirectUri":"http://localhost:3502/",
 
 
     "mashupClient_comment": "Client ID and Client secret from the OAuth 2.0 Client Registration record used for mashup use case",
     "mashupClient_comment2": "See SDK Guide for instructions on how to generate and obtain the proper values for the following entries",
-    "mashupClientId": "97003903657917001702",
+    "mashupClientId": "",
+    "customAuthType":"Basic",
     "mashupUserIdentifier": "NaomiSummerfield",
     "mashupClient_comment3": "Note: mashupPassword requires Base64 encoding",
     "mashupPassword": "aW5zdGFsbDEyMzQ1IQ==",
