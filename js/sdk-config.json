@@ -16,7 +16,8 @@
     "mashupPassword": "",
 
     "portalClientId_comment": "Client ID from the OAuth 2.0 Client Registration record used for portal use case",
-    "portalClientId": "83396918888684086088"
+    "portalClientId": "83396918888684086088",
+    "portalPassword": "3AEEE0418202C2BF4A3277F3B5058B42"
   },
   "serverConfig": {
     "infinityRestServerUrl_comment": "Full path to Infinity REST server",
