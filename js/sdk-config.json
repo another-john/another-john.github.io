@@ -6,7 +6,7 @@
     "authService": "pega",
         "authorize":"https://commerciallending.pegatsdemo.com/prweb/PRRestService/oauth2/v1/authorize",
     "token":"https://commerciallending.pegatsdemo.com/prweb/PRRestService/oauth2/v1/token",
-    "redirectUri":"http://localhost:3502/",
+
 
 
     "mashupClient_comment": "Client ID and Client secret from the OAuth 2.0 Client Registration record used for mashup use case",
