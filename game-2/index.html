@@ -265,12 +265,14 @@
                 </div>
 
                 <div class="question">
-                    Count the vegetables in this image:
+                    How many <span class="vegetable-label" id="vegetableLabel">?</span> are there?
                 </div>
 
-                <div class="input-group" id="inputGroup">
-                    <!-- Input fields will be generated here -->
+                <div class="input-group">
+                    <input type="number" id="answerInput" min="0" max="20" placeholder="0">
+                    <button onclick="submitAnswer()">Submit</button>
                 </div>
+                <div class="keyboard-hint">Press Enter to submit</div>
 
                 <div class="feedback" id="feedback"></div>
             </div>
@@ -289,10 +291,13 @@
 
     <script>
         let gameData = [];
-        let currentRound = 0;
+        let currentImageIndex = 0;
+        let currentVegetableIndex = 0;
         let currentScore = 0;
-        let totalRounds = 0;
+        let totalQuestions = 0;
+        let currentQuestion = 0;
         let currentGame = null;
+        let currentVegetable = null;
         let vegetables = [];
 
         // Load game data from JSON
@@ -300,126 +305,98 @@
             try {
                 const response = await fetch('game_data.json');
                 gameData = await response.json();
-                totalRounds = gameData.length;
+                // Calculate total number of questions (sum of vegetables across all images)
+                totalQuestions = gameData.reduce((sum, game) => {
+                    const vegs = Object.keys(game).filter(key => key !== 'image');
+                    return sum + vegs.length;
+                }, 0);
             } catch (error) {
                 console.error('Error loading game data:', error);
                 gameData = [];
-                totalRounds = 0;
+                totalQuestions = 0;
             }
         }
 
         function startGame() {
-            currentRound = 0;
+            currentImageIndex = 0;
+            currentVegetableIndex = 0;
             currentScore = 0;
-            if (totalRounds === 0) {
+            currentQuestion = 0;
+            if (totalQuestions === 0) {
                 alert('Error: No game data loaded');
                 return;
             }
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameScreen').classList.add('active');
-            loadNextRound();
+            loadNextQuestion();
         }
 
-        function loadNextRound() {
-            if (currentRound >= totalRounds) {
+        function loadNextQuestion() {
+            if (currentImageIndex >= gameData.length) {
                 endGame();
                 return;
             }
 
-            currentRound++;
-            currentGame = gameData[currentRound - 1];
+            currentGame = gameData[currentImageIndex];
 
             // Get vegetable names from the JSON object (exclude 'image' property)
             vegetables = Object.keys(currentGame).filter(key => key !== 'image');
 
+            // Check if we've asked all vegetables for this image
+            if (currentVegetableIndex >= vegetables.length) {
+                currentImageIndex++;
+                currentVegetableIndex = 0;
+                if (currentImageIndex >= gameData.length) {
+                    endGame();
+                    return;
+                }
+                currentGame = gameData[currentImageIndex];
+                vegetables = Object.keys(currentGame).filter(key => key !== 'image');
+            }
+
+            currentQuestion++;
+            currentVegetable = vegetables[currentVegetableIndex];
+
             // Update UI
             document.getElementById('gameImage').src = currentGame.image;
-            document.getElementById('round').textContent = currentRound + '/' + totalRounds;
+            document.getElementById('vegetableLabel').textContent = currentVegetable;
+            document.getElementById('round').textContent = currentQuestion + '/' + totalQuestions;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').focus();
             document.getElementById('feedback').classList.remove('show', 'correct', 'incorrect');
-
-            // Build input fields for all vegetables
-            buildInputFields();
-        }
-
-        function buildInputFields() {
-            const inputGroup = document.getElementById('inputGroup');
-            inputGroup.innerHTML = '';
-
-            vegetables.forEach(veg => {
-                const label = document.createElement('div');
-                label.style.width = '100%';
-                label.style.textAlign = 'center';
-                label.style.marginBottom = '10px';
-                label.innerHTML = `<div style="font-weight: bold; color: #333; margin-bottom: 5px;">${veg}</div>`;
-
-                const input = document.createElement('input');
-                input.type = 'number';
-                input.id = `input-${veg}`;
-                input.min = '0';
-                input.max = '20';
-                input.placeholder = '0';
-                input.style.marginBottom = '15px';
-
-                inputGroup.appendChild(label);
-                inputGroup.appendChild(input);
-            });
-
-            // Add submit button
-            const submitBtn = document.createElement('button');
-            submitBtn.textContent = 'Submit';
-            submitBtn.onclick = submitAnswer;
-            submitBtn.style.width = '100%';
-            submitBtn.style.marginTop = '10px';
-
-            inputGroup.appendChild(submitBtn);
-
-            // Focus on first input
-            const firstInput = document.querySelector('input[type="number"]');
-            if (firstInput) firstInput.focus();
         }
 
         function submitAnswer() {
-            let allCorrect = true;
-            const results = {};
+            const userAnswer = parseInt(document.getElementById('answerInput').value);
 
-            vegetables.forEach(veg => {
-                const userAnswer = parseInt(document.getElementById(`input-${veg}`).value);
-                const correctAnswer = currentGame[veg];
+            if (isNaN(userAnswer)) {
+                alert('Please enter a valid number');
+                return;
+            }
 
-                results[veg] = {
-                    userAnswer: isNaN(userAnswer) ? 0 : userAnswer,
-                    correctAnswer: correctAnswer,
-                    correct: !isNaN(userAnswer) && userAnswer === correctAnswer
-                };
-
-                if (!results[veg].correct) {
-                    allCorrect = false;
-                }
-            });
-
+            const correctCount = currentGame[currentVegetable];
             const feedback = document.getElementById('feedback');
 
-            if (allCorrect) {
+            if (userAnswer === correctCount) {
                 currentScore++;
-                feedback.textContent = '✅ Perfect! All counts were correct!';
+                feedback.textContent = '✅ Correct! There were ' + correctCount + ' ' + currentVegetable + '!';
                 feedback.classList.add('show', 'correct');
             } else {
-                let feedbackText = '❌ Not quite right. Correct answers:<br><br>';
-                vegetables.forEach(veg => {
-                    const correctAnswer = currentGame[veg];
-                    feedbackText += `${veg}: ${correctAnswer}<br>`;
-                });
-                feedback.innerHTML = feedbackText;
+                feedback.textContent = '❌ Wrong! The correct answer was ' + correctCount + ' ' + currentVegetable +
+                                       '. You said ' + userAnswer + '.';
                 feedback.classList.add('show', 'incorrect');
             }
 
             document.getElementById('score').textContent = currentScore;
             document.getElementById('accuracy').textContent =
-                Math.round((currentScore / currentRound) * 100) + '%';
+                Math.round((currentScore / currentQuestion) * 100) + '%';
 
-            // Load next round after 2 seconds
+            // Move to next vegetable
+            currentVegetableIndex++;
+
+            // Load next question after 2 seconds
             setTimeout(() => {
-                loadNextRound();
+                loadNextQuestion();
             }, 2000);
         }
 
