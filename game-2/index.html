@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vegetable Counting Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .game-area {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-container {
+            margin: 20px 0;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .image-container.active {
+            display: block;
+        }
+
+        .game-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .question {
+            font-size: 1.5em;
+            color: #333;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .vegetable-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #FFE4B5;
+            border-radius: 25px;
+            margin: 10px 0;
+            font-size: 1.3em;
+            color: #D2691E;
+            font-weight: bold;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        input[type="number"] {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            width: 120px;
+            text-align: center;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(118, 75, 162, 0.3);
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #90EE90;
+            color: #228B22;
+            border: 2px solid #228B22;
+        }
+
+        .feedback.incorrect {
+            background: #FFB6C6;
+            color: #C41E3A;
+            border: 2px solid #C41E3A;
+        }
+
+        .start-screen {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .start-screen p {
+            font-size: 1.1em;
+            color: #666;
+            margin: 20px 0;
+        }
+
+        .game-screen {
+            display: none;
+        }
+
+        .game-screen.active {
+            display: block;
+        }
+
+        .end-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .end-screen.active {
+            display: block;
+        }
+
+        .final-score {
+            font-size: 3em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 30px 0;
+        }
+
+        .emoji {
+            font-size: 3em;
+            margin: 20px;
+        }
+
+        .keyboard-hint {
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div class="start-screen" id="startScreen">
+            <h1>🥕 Vegetable Counter 🥬</h1>
+            <p style="font-size: 1.2em; margin-top: 20px;">Test your counting skills!</p>
+            <p>Look at each image and count how many of a specific vegetable you can see.</p>
+            <p style="margin: 30px 0;">Count all vegetables in each image!</p>
+            <button onclick="startGame()" style="width: 100%; padding: 20px; font-size: 1.3em;">START GAME</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-screen" id="gameScreen">
+            <h1>🥕 Vegetable Counter 🥬</h1>
+            
+            <div class="score-board">
+                <div class="score-item">
+                    <div class="score-label">Score</div>
+                    <div class="score-value" id="score">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Round</div>
+                    <div class="score-value" id="round">1/5</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Accuracy</div>
+                    <div class="score-value" id="accuracy">-</div>
+                </div>
+            </div>
+
+            <div class="game-area">
+                <div class="image-container active" id="imageContainer">
+                    <img class="game-image" id="gameImage" src="" alt="Game image">
+                </div>
+
+                <div class="question">
+                    Count the vegetables in this image:
+                </div>
+
+                <div class="input-group" id="inputGroup">
+                    <!-- Input fields will be generated here -->
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+            </div>
+        </div>
+
+        <!-- End Screen -->
+        <div class="end-screen" id="endScreen">
+            <h1>Game Over! 🎉</h1>
+            <div class="emoji" id="endEmoji">🎊</div>
+            <p style="font-size: 1.2em; color: #666;">Your Final Score:</p>
+            <div class="final-score" id="finalScore">0/5</div>
+            <p style="font-size: 1.1em; color: #666; margin: 20px 0;" id="endMessage"></p>
+            <button onclick="location.reload()" style="width: 100%; padding: 15px; font-size: 1.1em;">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script>
+        let gameData = [];
+        let currentRound = 0;
+        let currentScore = 0;
+        let totalRounds = 0;
+        let currentGame = null;
+        let vegetables = [];
+
+        // Load game data from JSON
+        async function loadGameData() {
+            try {
+                const response = await fetch('game_data.json');
+                gameData = await response.json();
+                totalRounds = gameData.length;
+            } catch (error) {
+                console.error('Error loading game data:', error);
+                gameData = [];
+                totalRounds = 0;
+            }
+        }
+
+        function startGame() {
+            currentRound = 0;
+            currentScore = 0;
+            if (totalRounds === 0) {
+                alert('Error: No game data loaded');
+                return;
+            }
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameScreen').classList.add('active');
+            loadNextRound();
+        }
+
+        function loadNextRound() {
+            if (currentRound >= totalRounds) {
+                endGame();
+                return;
+            }
+
+            currentRound++;
+            currentGame = gameData[currentRound - 1];
+
+            // Get vegetable names from the JSON object (exclude 'image' property)
+            vegetables = Object.keys(currentGame).filter(key => key !== 'image');
+
+            // Update UI
+            document.getElementById('gameImage').src = currentGame.image;
+            document.getElementById('round').textContent = currentRound + '/' + totalRounds;
+            document.getElementById('feedback').classList.remove('show', 'correct', 'incorrect');
+
+            // Build input fields for all vegetables
+            buildInputFields();
+        }
+
+        function buildInputFields() {
+            const inputGroup = document.getElementById('inputGroup');
+            inputGroup.innerHTML = '';
+
+            vegetables.forEach(veg => {
+                const label = document.createElement('div');
+                label.style.width = '100%';
+                label.style.textAlign = 'center';
+                label.style.marginBottom = '10px';
+                label.innerHTML = `<div style="font-weight: bold; color: #333; margin-bottom: 5px;">${veg}</div>`;
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.id = `input-${veg}`;
+                input.min = '0';
+                input.max = '20';
+                input.placeholder = '0';
+                input.style.marginBottom = '15px';
+
+                inputGroup.appendChild(label);
+                inputGroup.appendChild(input);
+            });
+
+            // Add submit button
+            const submitBtn = document.createElement('button');
+            submitBtn.textContent = 'Submit';
+            submitBtn.onclick = submitAnswer;
+            submitBtn.style.width = '100%';
+            submitBtn.style.marginTop = '10px';
+
+            inputGroup.appendChild(submitBtn);
+
+            // Focus on first input
+            const firstInput = document.querySelector('input[type="number"]');
+            if (firstInput) firstInput.focus();
+        }
+
+        function submitAnswer() {
+            let allCorrect = true;
+            const results = {};
+
+            vegetables.forEach(veg => {
+                const userAnswer = parseInt(document.getElementById(`input-${veg}`).value);
+                const correctAnswer = currentGame[veg];
+
+                results[veg] = {
+                    userAnswer: isNaN(userAnswer) ? 0 : userAnswer,
+                    correctAnswer: correctAnswer,
+                    correct: !isNaN(userAnswer) && userAnswer === correctAnswer
+                };
+
+                if (!results[veg].correct) {
+                    allCorrect = false;
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+
+            if (allCorrect) {
+                currentScore++;
+                feedback.textContent = '✅ Perfect! All counts were correct!';
+                feedback.classList.add('show', 'correct');
+            } else {
+                let feedbackText = '❌ Not quite right. Correct answers:<br><br>';
+                vegetables.forEach(veg => {
+                    const correctAnswer = currentGame[veg];
+                    feedbackText += `${veg}: ${correctAnswer}<br>`;
+                });
+                feedback.innerHTML = feedbackText;
+                feedback.classList.add('show', 'incorrect');
+            }
+
+            document.getElementById('score').textContent = currentScore;
+            document.getElementById('accuracy').textContent =
+                Math.round((currentScore / currentRound) * 100) + '%';
+
+            // Load next round after 2 seconds
+            setTimeout(() => {
+                loadNextRound();
+            }, 2000);
+        }
+
+        function endGame() {
+            document.getElementById('gameScreen').classList.remove('active');
+            document.getElementById('endScreen').classList.add('active');
+            document.getElementById('finalScore').textContent = currentScore + '/' + totalRounds;
+
+            let message = '';
+            let emoji = '';
+            const percentage = Math.round((currentScore / totalRounds) * 100);
+
+            if (currentScore === totalRounds) {
+                emoji = '🌟';
+                message = 'Perfect score! You are a master counter!';
+            } else if (percentage >= 80) {
+                emoji = '😄';
+                message = 'Great job! You are an excellent counter!';
+            } else if (percentage >= 60) {
+                emoji = '👍';
+                message = 'Good effort! Keep practicing!';
+            } else if (percentage >= 40) {
+                emoji = '🙂';
+                message = 'Not bad! Try again to improve your score!';
+            } else {
+                emoji = '💪';
+                message = 'Better luck next time! Practice makes perfect!';
+            }
+
+            document.getElementById('endEmoji').textContent = emoji;
+            document.getElementById('endMessage').textContent = message;
+        }
+
+        // Allow Enter key to submit answer
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && document.getElementById('gameScreen').classList.contains('active')) {
+                submitAnswer();
+            }
+        });
+
+        // Load game data on page load
+        window.addEventListener('DOMContentLoaded', loadGameData);
+    </script>
+</body>
+</html>
