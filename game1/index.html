@@ -155,23 +155,50 @@
     .draggable-word {
       background: #3b82f6;
       color: white;
-      padding: 0.75rem 1.5rem;
+      padding: 1rem 1.5rem;
       border-radius: 8px;
       font-size: 18px;
       font-weight: 600;
       cursor: grab;
       user-select: none;
-      transition: opacity 0.2s;
+      transition: all 0.2s;
       display: none;
+      touch-action: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
     }
 
     .draggable-word:active {
       cursor: grabbing;
       opacity: 0.8;
+      transform: scale(1.05);
     }
 
     .draggable-word.dragging {
-      opacity: 0.6;
+      opacity: 0.7;
+      transform: scale(1.1);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+    }
+
+    .ghost-drag {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.8;
+      transform: scale(1.1);
+      background: #3b82f6;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+    }
+
+    .card.drop-target {
+      background: #dbeafe;
+      border-color: #0284c7;
+      transform: scale(1.05);
     }
 
     .controls {
@@ -280,9 +307,30 @@
       animation: slideOut 0.3s ease-in forwards;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 1024px) {
+      .cards-grid {
+        gap: 16px;
+      }
+
+      .card {
+        border-width: 3px;
+      }
+
+      .draggable-word {
+        padding: 1.2rem 2rem;
+        font-size: 20px;
+      }
+
+      button {
+        padding: 1rem 2rem;
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
       .cards-grid {
         grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
       }
 
       .header h1 {
@@ -290,7 +338,29 @@
       }
 
       .stats-container {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .card {
+        border-width: 2px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .header h1 {
+        font-size: 22px;
+      }
+
+      .stats-container {
         grid-template-columns: 1fr;
+      }
+
+      .drag-zone {
+        padding: 1.5rem 1rem;
       }
     }
   </style>
@@ -353,7 +423,13 @@
       isMemorizing: false,
       isMatching: false,
       draggedFrom: null,
-      timerInterval: null
+      timerInterval: null,
+      touchData: {
+        isDragging: false,
+        ghostElement: null,
+        startX: 0,
+        startY: 0
+      }
     };
 
     function shuffle(array) {
@@ -523,56 +599,125 @@
       }
     }
 
-    document.getElementById('draggableWord').addEventListener('dragstart', (e) => {
+    const draggableWord = document.getElementById('draggableWord');
+    const cardsGrid = document.getElementById('cardsGrid');
+
+    function getCardAtPoint(x, y) {
+      const cards = document.querySelectorAll('.card');
+      for (let i = 0; i < cards.length; i++) {
+        const rect = cards[i].getBoundingClientRect();
+        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+          return i;
+        }
+      }
+      return null;
+    }
+
+    function updateDropTargets(x, y) {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => card.classList.remove('drop-target'));
+      
+      const cardIndex = getCardAtPoint(x, y);
+      if (cardIndex !== null) {
+        document.querySelectorAll('.card')[cardIndex].classList.add('drop-target');
+      }
+    }
+
+    function createGhostElement(text) {
+      const ghost = document.createElement('div');
+      ghost.className = 'ghost-drag';
+      ghost.textContent = text;
+      document.body.appendChild(ghost);
+      return ghost;
+    }
+
+    function removeGhostElement() {
+      if (gameState.touchData.ghostElement) {
+        gameState.touchData.ghostElement.remove();
+        gameState.touchData.ghostElement = null;
+      }
+    }
+
+    draggableWord.addEventListener('dragstart', (e) => {
       e.dataTransfer.effectAllowed = 'copy';
       e.currentTarget.classList.add('dragging');
     });
 
-    document.getElementById('draggableWord').addEventListener('dragend', (e) => {
+    draggableWord.addEventListener('dragend', (e) => {
       e.currentTarget.classList.remove('dragging');
+      document.querySelectorAll('.card').forEach(card => card.classList.remove('drop-target'));
     });
 
-    document.getElementById('cardsGrid').addEventListener('dragover', (e) => {
+    cardsGrid.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'copy';
-      document.getElementById('dragZone').classList.add('active');
+      updateDropTargets(e.clientX, e.clientY);
     });
 
-    document.getElementById('cardsGrid').addEventListener('dragleave', (e) => {
+    cardsGrid.addEventListener('dragleave', (e) => {
       if (e.currentTarget === e.target) {
-        document.getElementById('dragZone').classList.remove('active');
+        document.querySelectorAll('.card').forEach(card => card.classList.remove('drop-target'));
       }
     });
 
-    document.getElementById('cardsGrid').addEventListener('drop', (e) => {
+    cardsGrid.addEventListener('drop', (e) => {
       e.preventDefault();
-      document.getElementById('dragZone').classList.remove('active');
-
-      const cardsContainer = document.getElementById('cardsGrid');
-      const cards = document.querySelectorAll('.card');
-      let dropTarget = null;
-
-      cards.forEach((card, index) => {
-        const rect = card.getBoundingClientRect();
-        if (
-          e.clientX >= rect.left &&
-          e.clientX <= rect.right &&
-          e.clientY >= rect.top &&
-          e.clientY <= rect.bottom
-        ) {
-          dropTarget = index;
-        }
-      });
-
+      document.querySelectorAll('.card').forEach(card => card.classList.remove('drop-target'));
+      const dropTarget = getCardAtPoint(e.clientX, e.clientY);
       if (dropTarget !== null) {
         handleCardDrop(e, dropTarget);
       }
     });
 
+    draggableWord.addEventListener('touchstart', (e) => {
+      if (!gameState.isMatching) return;
+      e.preventDefault();
+      gameState.touchData.isDragging = true;
+      const touch = e.touches[0];
+      gameState.touchData.startX = touch.clientX;
+      gameState.touchData.startY = touch.clientY;
+      gameState.touchData.ghostElement = createGhostElement(draggableWord.textContent);
+      draggableWord.classList.add('dragging');
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!gameState.touchData.isDragging) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const ghostEl = gameState.touchData.ghostElement;
+      
+      if (ghostEl) {
+        ghostEl.style.left = (touch.clientX - 60) + 'px';
+        ghostEl.style.top = (touch.clientY - 30) + 'px';
+      }
+
+      updateDropTargets(touch.clientX, touch.clientY);
+    }, { passive: false });
+
+    document.addEventListener('touchend', (e) => {
+      if (!gameState.touchData.isDragging) return;
+      e.preventDefault();
+      
+      gameState.touchData.isDragging = false;
+      draggableWord.classList.remove('dragging');
+      document.querySelectorAll('.card').forEach(card => card.classList.remove('drop-target'));
+
+      if (e.changedTouches.length > 0) {
+        const touch = e.changedTouches[0];
+        const dropTarget = getCardAtPoint(touch.clientX, touch.clientY);
+        if (dropTarget !== null) {
+          handleCardDrop(e, dropTarget);
+        }
+      }
+
+      removeGhostElement();
+    }, { passive: false });
+
     function resetGame() {
       if (gameState.timerInterval) {
         clearInterval(gameState.timerInterval);
       }
+      removeGhostElement();
       gameState = {
         cards: [],
         currentWord: null,
@@ -581,13 +726,20 @@
         isMemorizing: false,
         isMatching: false,
         draggedFrom: null,
-        timerInterval: null
+        timerInterval: null,
+        touchData: {
+          isDragging: false,
+          ghostElement: null,
+          startX: 0,
+          startY: 0
+        }
       };
       document.getElementById('status').textContent = 'Ready';
       document.getElementById('gameMessage').innerHTML = '';
       document.getElementById('draggableWord').style.display = 'none';
       document.getElementById('timer-display').style.display = 'none';
       document.getElementById('startBtn').disabled = false;
+      document.querySelectorAll('.card').forEach(card => card.classList.remove('drop-target'));
       updateStats();
       renderCards();
     }
