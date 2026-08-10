@@ -119,13 +119,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      backface-visibility: hidden;
       position: absolute;
-    }
-
-    .card-back {
-      transform: rotateY(180deg);
-      font-size: 50px;
     }
 
     .drag-zone {
@@ -159,56 +153,29 @@
       color: white;
       padding: 1rem 1.5rem;
       border-radius: 8px;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
-      cursor: pointer;
-      user-select: none;
-      transition: all 0.3s;
       display: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
+      text-align: center;
       border: 2px solid #3b82f6;
-    }
-
-    .draggable-word:active {
-      opacity: 0.9;
-      transform: scale(0.95);
-    }
-
-    .draggable-word.selected {
-      background: #1e40af;
-      border-color: #1e40af;
-      transform: scale(1.05);
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .card {
       aspect-ratio: 1;
-      background: white;
+      background: transparent;
       border: 2px solid #3b82f6;
       border-radius: 12px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      font-weight: 600;
-      color: #1a1a1a;
-      user-select: none;
-      transition: all 0.3s ease;
-      transform-style: preserve-3d;
-      transform: rotateY(0deg);
-      perspective: 1000px;
+      position: relative;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
     }
 
-    .card:active:not(.disabled) {
-      transform: scale(0.95);
-    }
-
-    .card.flipped {
-      transform: rotateY(180deg);
+    .card:hover:not(.disabled) {
+      border-color: #2563eb;
     }
 
     .card.disabled {
@@ -216,11 +183,37 @@
       opacity: 0.7;
     }
 
-    .card.drop-target {
-      background: #dbeafe;
-      border-color: #0284c7;
-      transform: scale(1.08);
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.3);
+    .card-front, .card-back {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 10px;
+      background: white;
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .card-front {
+      display: flex;
+    }
+
+    .card-back {
+      display: none;
+      font-size: 50px;
+    }
+
+    .card.flipped .card-front {
+      display: none;
+    }
+
+    .card.flipped .card-back {
+      display: flex;
     }
 
     .controls {
@@ -414,8 +407,8 @@
     <div class="cards-grid" id="cardsGrid"></div>
 
     <div class="drag-zone" id="dragZone">
-      <div class="drag-label">Tap the vegetable word, then tap a card to match</div>
-      <div class="draggable-word" id="draggableWord" draggable="true"></div>
+      <div class="drag-label">Click the card that matches the word shown below</div>
+      <div class="draggable-word" id="draggableWord"></div>
       <div class="game-message" id="gameMessage"></div>
     </div>
 
@@ -445,13 +438,7 @@
       isMemorizing: false,
       isMatching: false,
       draggedFrom: null,
-      timerInterval: null,
-      touchData: {
-        isDragging: false,
-        ghostElement: null,
-        startX: 0,
-        startY: 0
-      }
+      timerInterval: null
     };
 
     function shuffle(array) {
@@ -523,7 +510,7 @@
       gameState.isMemorizing = true;
       document.getElementById('status').textContent = 'Memorizing...';
       document.getElementById('gameMessage').innerHTML = 'Look carefully at the vegetables!';
-      document.getElementById('startBtn').disabled = true;
+      document.getElementById('startBtn').style.display = 'none';
 
       showCards();
 
@@ -549,13 +536,10 @@
     function endMemorizing() {
       gameState.isMemorizing = false;
       gameState.isMatching = true;
-      document.getElementById('startBtn').disabled = false;
       hideCards();
       document.getElementById('timer-display').style.display = 'none';
       document.getElementById('timer-display').classList.remove('warning');
       document.getElementById('status').textContent = 'Matching...';
-      document.getElementById('gameMessage').innerHTML = '';
-      deselectWord();
       showNextWord();
     }
 
@@ -577,7 +561,7 @@
       const wordEl = document.getElementById('draggableWord');
       wordEl.textContent = randomCard.vegetable.name;
       wordEl.style.display = 'inline-block';
-      deselectWord();
+      document.getElementById('gameMessage').textContent = '';
       setupCardClickListeners();
     }
 
@@ -608,16 +592,23 @@
     function handleCardDrop(e, cardIndex) {
       if (!gameState.isMatching || !gameState.currentWord) return;
 
-      deselectWord();
       const card = gameState.cards[cardIndex];
+      const cardElement = document.querySelectorAll('.card')[cardIndex];
 
       if (card.id === gameState.currentWord.id) {
         card.matched = true;
         gameState.correct++;
         gameState.score += 200;
+        
+        cardElement.classList.add('flipped');
+        cardElement.classList.add('disabled');
+        
         showToast(`✓ Correct! ${gameState.currentWord.vegetable.name}`, 'success');
         updateStats();
-        showNextWord();
+        
+        setTimeout(() => {
+          showNextWord();
+        }, 800);
       } else {
         gameState.score = Math.max(0, gameState.score - 50);
         showToast(`✗ Wrong! Try again.`, 'error');
@@ -628,24 +619,10 @@
     const draggableWord = document.getElementById('draggableWord');
     const cardsGrid = document.getElementById('cardsGrid');
 
-    function getCardAtIndex(index) {
-      return document.querySelectorAll('.card')[index];
-    }
-
-    function selectWord() {
-      draggableWord.classList.add('selected');
-      document.getElementById('gameMessage').textContent = 'Now tap a card to match!';
-    }
-
-    function deselectWord() {
-      draggableWord.classList.remove('selected');
-      document.getElementById('gameMessage').textContent = '';
-    }
-
     function setupCardClickListeners() {
       document.querySelectorAll('.card').forEach((card, index) => {
         card.onclick = function(e) {
-          if (!gameState.isMatching || !gameState.currentWord || !draggableWord.classList.contains('selected')) {
+          if (!gameState.isMatching || !gameState.currentWord) {
             return;
           }
           e.stopPropagation();
@@ -654,41 +631,10 @@
       });
     }
 
-    draggableWord.onclick = function(e) {
-      if (!gameState.isMatching) return;
-      e.stopPropagation();
-      
-      if (draggableWord.classList.contains('selected')) {
-        deselectWord();
-      } else {
-        selectWord();
-      }
-    };
-
-    draggableWord.addEventListener('touchstart', function(e) {
-      if (!gameState.isMatching) return;
-      e.preventDefault();
-      
-      if (draggableWord.classList.contains('selected')) {
-        deselectWord();
-      } else {
-        selectWord();
-      }
-    }, false);
-
-    document.addEventListener('click', function(e) {
-      if (!gameState.isMatching) return;
-      if (e.target === draggableWord || draggableWord.contains(e.target)) return;
-      if (e.target.classList.contains('card')) return;
-      
-      deselectWord();
-    });
-
     function resetGame() {
       if (gameState.timerInterval) {
         clearInterval(gameState.timerInterval);
       }
-      gameState.touchData.isDragging = false;
       
       gameState.cards = [];
       gameState.currentWord = null;
@@ -702,15 +648,15 @@
       document.getElementById('status').textContent = 'Ready';
       document.getElementById('gameMessage').innerHTML = '';
       document.getElementById('draggableWord').style.display = 'none';
-      document.getElementById('draggableWord').classList.remove('selected');
       document.getElementById('timer-display').style.display = 'none';
-      document.getElementById('startBtn').disabled = false;
+      document.getElementById('startBtn').style.display = 'block';
       document.querySelectorAll('.card').forEach(card => {
-        card.classList.remove('drop-target', 'flipped');
+        card.classList.remove('flipped', 'disabled');
         card.onclick = null;
       });
       updateStats();
-      renderCards();
+      
+      initializeGame();
     }
 
     initializeGame();
