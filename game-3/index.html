@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Chinese Pinyin Memory Game</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #f4f9f9;
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    /* Outer Wrapper for 100% iPad Fit */
+    #app-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      position: relative;
+    }
+
+    /* Top Bar */
+    header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 60px;
+    }
+
+    .timer-display {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2c3e50;
+      background: #e8f8f5;
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 2px solid #1abc9c;
+    }
+
+    .score-display {
+      font-size: 28px;
+      font-weight: bold;
+      color: #d35400;
+      background: #fef5e7;
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 2px solid #e67e22;
+    }
+
+    /* Card Grid (2 rows x 4 columns) */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 20px;
+      width: 80%;
+      max-width: 900px;
+      height: calc(100vh - 220px);
+      max-height: 500px;
+    }
+
+    .card {
+      perspective: 1000px;
+      position: relative;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* Back of card: Pink */
+    .card-back {
+      background-color: #ffb6c1;
+      border: 4px solid #ff69b4;
+    }
+
+    /* Front of card: Image */
+    .card-front {
+      background-color: #fff;
+      transform: rotateY(180deg);
+      border: 4px solid #3498db;
+    }
+
+    .card-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Shake Animation for Wrong Choice */
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-15px); }
+      40% { transform: translateX(15px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+    }
+
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    /* Bottom Prompt & Controls */
+    footer {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 80px;
+    }
+
+    .btn {
+      font-size: 20px;
+      font-weight: bold;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.95);
+    }
+
+    .btn-start {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    .btn-reset {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .pinyin-prompt {
+      font-size: 38px;
+      font-weight: bold;
+      color: #2c3e50;
+      background: #ffffff;
+      padding: 5px 40px;
+      border-radius: 15px;
+      border: 3px dashed #9b59b6;
+      min-width: 200px;
+      text-align: center;
+    }
+
+    /* Shiny Star Overlay */
+    #star-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .star {
+      font-size: 150px;
+      color: #f1c40f;
+      text-shadow: 0 0 30px #f39c12;
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(0.8); }
+      to { transform: scale(1.2); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- Star Overlay -->
+    <div id="star-overlay"><span class="star">⭐</span></div>
+
+    <!-- Header Section -->
+    <header>
+      <div class="timer-display" id="timer">Timer: 15s</div>
+      <div class="score-display" id="score">Score: 0</div>
+    </header>
+
+    <!-- 2x4 Card Area -->
+    <main class="grid-container" id="grid"></main>
+
+    <!-- Footer Controls -->
+    <footer>
+      <button class="btn btn-reset" id="reset-btn">Reset</button>
+      <div class="pinyin-prompt" id="pinyin-prompt">--</div>
+      <button class="btn btn-start" id="start-btn">Start</button>
+    </footer>
+  </div>
+
+  <script>
+    // Master Word List (loaded from all_cards.json)
+    let ALL_CARDS = [];
+
+    // Game State Controls
+    let currentScore = 0;
+    let timerValue = 15;
+    let timerInterval = null;
+    let isClickable = false;
+
+    let currentRoundCards = [];
+    let activePinyinPrompt = null;
+    let matchedCount = 0;
+
+    // History Tracking to prevent repeats across 3 consecutive rounds
+    let historyRound1 = []; // Most recent round
+    let historyRound2 = []; // Round before last
+
+    // Elements
+    const gridEl = document.getElementById('grid');
+    const timerEl = document.getElementById('timer');
+    const scoreEl = document.getElementById('score');
+    const pinyinEl = document.getElementById('pinyin-prompt');
+    const startBtn = document.getElementById('start-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const starOverlay = document.getElementById('star-overlay');
+
+    // Event Listeners
+    startBtn.addEventListener('click', startGame);
+    resetBtn.addEventListener('click', fullReset);
+
+    // Load card configuration from JSON
+    async function loadCardsConfig() {
+      try {
+        const response = await fetch('./all_cards.json');
+        if (!response.ok) throw new Error('Failed to load all_cards.json');
+        ALL_CARDS = await response.json();
+      } catch (error) {
+        console.error('Error loading cards:', error);
+        alert('Failed to load game configuration. Please ensure all_cards.json is in the same directory.');
+      }
+    }
+
+    // Initialize game on page load
+    loadCardsConfig();
+
+    // 1. Fully Reset the Game
+    function fullReset() {
+      clearInterval(timerInterval);
+      currentScore = 0;
+      updateScore(0);
+      timerValue = 15;
+      timerEl.textContent = 'Timer: 15s';
+      pinyinEl.textContent = '--';
+      isClickable = false;
+      historyRound1 = [];
+      historyRound2 = [];
+      matchedCount = 0;
+      gridEl.innerHTML = '';
+      startBtn.disabled = false;
+    }
+
+    // 2. Start Game / Round Loop
+    function startGame() {
+      startBtn.disabled = true;
+      startNextRound();
+    }
+
+    function startNextRound() {
+      gridEl.innerHTML = '';
+      matchedCount = 0;
+      isClickable = false;
+      pinyinEl.textContent = '--';
+
+      // Pick 8 unique cards based on 3-round non-repetition restriction
+      currentRoundCards = pick8Cards();
+
+      // Initialize isMatched flag for all cards in this round
+      currentRoundCards.forEach(card => {
+        card.isMatched = false;
+      });
+
+      // Render cards (Shown front face initially)
+      currentRoundCards.forEach((card, idx) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'card flipped'; // flipped shows picture front
+        cardEl.dataset.id = card.id;
+        cardEl.dataset.index = idx;
+
+        cardEl.innerHTML = `
+          <div class="card-inner">
+            <div class="card-back"></div>
+            <div class="card-front">
+              <img src="${card.img}" alt="${card.id}">
+            </div>
+          </div>
+        `;
+
+        cardEl.addEventListener('click', () => handleCardClick(cardEl, card));
+        gridEl.appendChild(cardEl);
+      });
+
+      // 15-second initial viewing countdown
+      timerValue = 15;
+      timerEl.textContent = `Timer: ${timerValue}s`;
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timerValue--;
+        timerEl.textContent = `Timer: ${timerValue}s`;
+        if (timerValue <= 0) {
+          clearInterval(timerInterval);
+          hideCardsAndBeginMatch();
+        }
+      }, 1000);
+    }
+
+    // 3. Pick 8 unique cards avoiding duplicates across 3 consecutive rounds
+    function pick8Cards() {
+      // Find cards appearing in BOTH of the last 2 rounds
+      const forbidden = ALL_CARDS.filter(c =>
+        historyRound1.includes(c.id) && historyRound2.includes(c.id)
+      ).map(c => c.id);
+
+      let eligible = ALL_CARDS.filter(c => !forbidden.includes(c.id));
+
+      // Shuffle array
+      eligible.sort(() => Math.random() - 0.5);
+
+      let selected = eligible.slice(0, 8);
+
+      // If we don't have enough (failsafe edge case), fill from master list
+      if (selected.length < 8) {
+        const missingCount = 8 - selected.length;
+        const remaining = ALL_CARDS.filter(c => !selected.includes(c));
+        remaining.sort(() => Math.random() - 0.5);
+        selected = selected.concat(remaining.slice(0, missingCount));
+      }
+
+      // Final shuffle for grid placement randomness
+      selected.sort(() => Math.random() - 0.5);
+
+      // Update history buffer
+      historyRound2 = [...historyRound1];
+      historyRound1 = selected.map(c => c.id);
+
+      return selected;
+    }
+
+    // 4. Hide Cards (Flip to Solid Pink) & Generate First Pinyin Prompt
+    function hideCardsAndBeginMatch() {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(c => c.classList.remove('flipped')); // Shows Pink Back
+
+      isClickable = true;
+      nextPinyinPrompt();
+    }
+
+    // 5. Select Random Unmatched Pinyin Prompt
+    function nextPinyinPrompt() {
+      const unmatched = currentRoundCards.filter(c => !c.isMatched);
+      if (unmatched.length === 0) return;
+
+      const randomIndex = Math.floor(Math.random() * unmatched.length);
+      activePinyinPrompt = unmatched[randomIndex];
+      pinyinEl.textContent = activePinyinPrompt.pinyin;
+    }
+
+    // 6. Card Click & Match Logic
+    function handleCardClick(cardEl, card) {
+      if (!isClickable || card.isMatched || cardEl.classList.contains('flipped')) return;
+
+      if (card.id === activePinyinPrompt.id) {
+        // CORRECT MATCH
+        card.isMatched = true;
+        cardEl.classList.add('flipped'); // Turn back to picture side
+        updateScore(100);
+        matchedCount++;
+        isClickable = false; // Disable clicks during animation
+
+        if (matchedCount === 8) {
+          // All 8 matched!
+          showStarAndContinue();
+        } else {
+          // Wait for flip animation to complete before showing next prompt
+          setTimeout(() => {
+            nextPinyinPrompt();
+            isClickable = true; // Re-enable clicks after prompt appears
+          }, 1000);
+        }
+      } else {
+        // WRONG MATCH
+        updateScore(-20);
+        isClickable = false;
+
+        // Shake Animation
+        const inner = cardEl.querySelector('.card-inner');
+        inner.classList.add('shake');
+
+        setTimeout(() => {
+          inner.classList.remove('shake');
+          isClickable = true; // Unlock for next try (same pinyin stays)
+        }, 500);
+      }
+    }
+
+    // 7. Update & Clamp Score
+    function updateScore(points) {
+      currentScore += points;
+      if (currentScore < 0) currentScore = 0;
+      scoreEl.textContent = `Score: ${currentScore}`;
+    }
+
+    // 8. Round Completion: Star Effect & Auto Next Round
+    function showStarAndContinue() {
+      starOverlay.style.opacity = '1';
+
+      setTimeout(() => {
+        starOverlay.style.opacity = '0';
+        startNextRound(); // Automatic continuation while keeping score
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
