@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NBA Challenge | Verifying access</title>
+    <style>
+      :root { font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif; color: #fff; background: #072a65; }
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: linear-gradient(135deg, #041d4f, #006a79); }
+      main { width: min(560px, calc(100% - 40px)); padding: 42px; text-align: center; background: rgba(4, 29, 79, .88); border: 1px solid rgba(255,255,255,.22); border-radius: 16px; }
+      h1 { margin: 0 0 14px; font-size: clamp(26px, 5vw, 40px); }
+      p { margin: 0; line-height: 1.6; color: rgba(255,255,255,.8); }
+      a { display: inline-block; margin-top: 24px; color: #fff; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1 id="title">Verifying your access</h1>
+      <p id="message">Please wait while we confirm your e-mail address.</p>
+    </main>
+    <script>
+      const apiBaseUrl = (window.NBA_API_BASE_URL || "https://demox-app.com/api").replace(/\/$/, "");
+      const title = document.querySelector("#title");
+      const message = document.querySelector("#message");
+      const token = new URLSearchParams(window.location.search).get("token") || "";
+      async function verify() {
+        try {
+          const response = await fetch(`${apiBaseUrl}/verify?token=${encodeURIComponent(token)}`, { headers: { Accept: "application/json" } });
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.message || "Verification failed");
+          sessionStorage.setItem("nba_leaderboard_access_token", result.accessToken);
+          sessionStorage.setItem("nba_leaderboard_player_id", result.playerId);
+          window.location.replace(new URL("leaderboard.html", window.location.href).toString());
+        } catch (error) {
+          title.textContent = "Verification unavailable";
+          message.textContent = error.message || "This verification link is invalid or expired.";
+          const link = document.createElement("a");
+          link.href = "leaderboard-register.html";
+          link.textContent = "Return to registration";
+          document.querySelector("main").append(link);
+        }
+      }
+      verify();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="View my Pega Next Best Action Challenge achievement badge and leaderboard ranking." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Decision Intelligence Elite | NBA Challenge" />
+    <meta property="og:description" content="I earned the Decision Intelligence Elite badge in the Pega Next Best Action Challenge." />
+    <meta property="og:image" content="https://baix1.pegademo.com/nba-game/linkedin-badge-preview.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="627" />
+    <meta property="og:image:alt" content="Pega Next Best Action Challenge Decision Intelligence Elite badge" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Decision Intelligence Elite | NBA Challenge" />
+    <meta name="twitter:description" content="I earned the Decision Intelligence Elite badge in the Pega Next Best Action Challenge." />
+    <meta name="twitter:image" content="https://baix1.pegademo.com/nba-game/linkedin-badge-preview.png" />
+    <title>NBA Challenge | Leaderboard</title>
+    <style>
+      :root {
+        color: #fff;
+        font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+        font-synthesis: none;
+        --navy: #061e4b;
+        --navy-light: #0a3977;
+        --gold: #ffc836;
+        --teal: #10a5ac;
+        --muted: rgba(255, 255, 255, 0.68);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        min-height: 100vh;
+        background: var(--navy);
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .utility-bar {
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        color: #2860bf;
+        background: #f3f4f6;
+        font-size: 14px;
+      }
+
+      .sites-link,
+      .utility-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .app-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 6px);
+        gap: 3px;
+      }
+
+      .app-grid span {
+        width: 6px;
+        height: 6px;
+        background: currentColor;
+      }
+
+      .utility-icon {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border: 1px solid currentColor;
+        border-radius: 50%;
+        font-size: 13px;
+      }
+
+      .main-nav {
+        height: 87px;
+        padding: 0 34px;
+        display: flex;
+        align-items: center;
+        gap: 55px;
+        background: #fff;
+      }
+
+      .brand img {
+        display: block;
+        width: 154px;
+        height: auto;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+      }
+
+      .nav-links a {
+        color: #14151b;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .leaderboard-page {
+        position: relative;
+        min-height: calc(100vh - 133px);
+        overflow: hidden;
+        padding: 40px 24px 48px;
+        background:
+          radial-gradient(circle at 82% 2%, rgba(0, 196, 186, 0.2), transparent 31%),
+          linear-gradient(125deg, #04183e 0%, #073570 63%, #006673 130%);
+      }
+
+      .leaderboard-page::before {
+        content: "";
+        position: absolute;
+        width: 720px;
+        height: 720px;
+        right: -250px;
+        top: -430px;
+        border: 1px solid rgba(0, 196, 186, 0.25);
+        border-radius: 50%;
+        background: repeating-radial-gradient(circle, transparent 0 70px, rgba(0, 196, 186, 0.2) 71px 72px);
+        pointer-events: none;
+      }
+
+      .leaderboard-shell {
+        position: relative;
+        z-index: 1;
+        width: min(100%, 1000px);
+        margin: 0 auto;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 40px;
+        padding: 0 15px;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: 5px;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.08);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .back-link:hover,
+      .back-link:focus-visible {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .leaderboard-header {
+        margin: 2px 0 32px;
+        text-align: center;
+      }
+
+      .eyebrow {
+        margin: 0 0 9px;
+        color: var(--gold);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(34px, 6vw, 52px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .rank-summary {
+        margin: 0;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      .rank-summary strong {
+        color: var(--gold);
+      }
+
+      .rank-summary span {
+        color: #fff;
+        font-weight: 700;
+      }
+
+      .leaderboard-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .leaderboard-loading {
+        min-height: 220px;
+        display: grid;
+        place-items: center;
+      }
+
+      .loading-spinner {
+        width: 42px;
+        height: 42px;
+        border: 4px solid rgba(255, 255, 255, 0.2);
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      .pagination[hidden] {
+        display: none;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .loading-spinner {
+          animation-duration: 1.8s;
+        }
+      }
+
+      .leaderboard-entry {
+        min-height: 70px;
+        display: grid;
+        grid-template-columns: 44px 42px minmax(0, 1fr) 120px auto;
+        align-items: center;
+        gap: 14px;
+        padding: 11px 18px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .leaderboard-entry.current-user {
+        border-color: var(--gold);
+        background: linear-gradient(90deg, rgba(255, 200, 54, 0.14), rgba(255, 255, 255, 0.04));
+        box-shadow: 0 0 24px rgba(255, 200, 54, 0.08);
+      }
+
+      .entry-rank {
+        color: var(--gold);
+        font-size: 19px;
+        font-weight: 900;
+      }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        color: #071b39;
+        background: var(--teal);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .current-user .avatar {
+        background: var(--gold);
+      }
+
+      .entry-info {
+        min-width: 0;
+      }
+
+      .entry-name {
+        overflow: hidden;
+        color: #fff;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .current-user .entry-name {
+        color: var(--gold);
+      }
+
+      .entry-title,
+      .points-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .entry-points {
+        text-align: right;
+      }
+
+      .points-value {
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .current-user .points-value {
+        color: var(--gold);
+      }
+
+      .see-badge-button {
+        min-height: 38px;
+        padding: 0 18px;
+        border: 0;
+        border-radius: 4px;
+        color: #071b39;
+        background: var(--gold);
+        font: inherit;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-transform: uppercase;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      .see-badge-button:hover {
+        filter: brightness(1.08);
+      }
+
+      .badge-dialog {
+        width: min(92vw, 520px);
+        padding: 0;
+        border: 1px solid rgba(255, 200, 54, 0.7);
+        border-radius: 8px;
+        color: #fff;
+        background: #071b39;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+      }
+
+      .badge-dialog::backdrop {
+        background: rgba(3, 12, 29, 0.78);
+      }
+
+      .badge-dialog-content {
+        position: relative;
+        padding: 42px 38px 36px;
+        text-align: center;
+      }
+
+      .badge-dialog-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 34px;
+        height: 34px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        color: #fff;
+        background: transparent;
+        font-size: 22px;
+        cursor: pointer;
+      }
+
+      .badge-share-menu-wrap {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 1;
+        text-align: left;
+      }
+
+      .badge-share-menu-trigger {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        color: #fff;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .badge-share-menu-trigger:hover,
+      .badge-share-menu-trigger[aria-expanded="true"] {
+        border-color: var(--gold);
+        color: var(--gold);
+        background: rgba(255, 200, 54, 0.1);
+      }
+
+      .badge-share-menu-trigger svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+      }
+
+      .badge-share-menu {
+        position: absolute;
+        top: 42px;
+        left: 0;
+        width: 190px;
+        padding: 7px;
+        border: 1px solid rgba(7, 27, 57, 0.14);
+        border-radius: 8px;
+        color: #17233a;
+        background: #fff;
+        box-shadow: 0 14px 38px rgba(0, 0, 0, 0.3);
+      }
+
+      .badge-share-menu[hidden] {
+        display: none;
+      }
+
+      .badge-share-option {
+        width: 100%;
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 8px 10px;
+        border: 0;
+        border-radius: 5px;
+        color: inherit;
+        background: transparent;
+        font: inherit;
+        font-size: 14px;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .badge-share-option:hover,
+      .badge-share-option:focus-visible {
+        outline: none;
+        background: #edf3f9;
+      }
+
+      .badge-share-option-icon {
+        width: 24px;
+        flex: 0 0 24px;
+        color: #0a66c2;
+        font-size: 20px;
+        font-weight: 800;
+        line-height: 1;
+        text-align: center;
+      }
+
+      .badge-share-option[data-share="email"] .badge-share-option-icon {
+        font-size: 18px;
+      }
+
+      .badge-share-option[data-share="x"] .badge-share-option-icon {
+        color: #111;
+      }
+
+      .badge-share-option[data-share="facebook"] .badge-share-option-icon {
+        color: #1877f2;
+      }
+
+      .badge-mark {
+        width: 72px;
+        height: 72px;
+        display: grid;
+        place-items: center;
+        margin: 0 auto 20px;
+        border: 3px solid var(--gold);
+        border-radius: 50%;
+        color: #071b39;
+        background: var(--gold);
+        font-size: 30px;
+        font-weight: 900;
+      }
+
+      .badge-eyebrow {
+        margin: 0 0 8px;
+        color: var(--teal);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+
+      .badge-player-name {
+        margin: 0;
+        overflow-wrap: anywhere;
+        color: var(--gold);
+        font-size: clamp(24px, 6vw, 36px);
+      }
+
+      .badge-title {
+        margin: 8px 0 26px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .badge-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .badge-stat {
+        padding: 16px;
+        background: #0b2448;
+      }
+
+      .badge-stat strong,
+      .badge-stat span {
+        display: block;
+      }
+
+      .badge-stat strong {
+        color: var(--gold);
+        font-size: 22px;
+      }
+
+      .badge-stat span {
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .badge-share-button {
+        width: 100%;
+        min-height: 44px;
+        margin-top: 18px;
+        border: 0;
+        border-radius: 4px;
+        color: #fff;
+        background: #0a66c2;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0;
+        cursor: pointer;
+      }
+
+      .badge-share-button:hover {
+        background: #004182;
+      }
+
+      .badge-share-status {
+        min-height: 18px;
+        margin: 10px 0 0;
+        color: var(--teal);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 25px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .page-button {
+        width: 34px;
+        height: 34px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.06);
+        cursor: pointer;
+      }
+
+      .page-button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 600px) {
+        .utility-bar {
+          height: 40px;
+          padding: 0 16px;
+        }
+
+        .main-nav {
+          height: 70px;
+          padding: 0 18px;
+          gap: 20px;
+        }
+
+        .brand img {
+          width: 124px;
+        }
+
+        .nav-links {
+          margin-left: auto;
+          font-size: 14px;
+        }
+
+        .nav-links a:first-child {
+          display: none;
+        }
+
+        .leaderboard-page {
+          min-height: calc(100vh - 110px);
+          padding: 20px 14px 36px;
+        }
+
+        .leaderboard-header {
+          margin: 24px 0;
+        }
+
+        .rank-summary span {
+          display: block;
+          margin-top: 3px;
+        }
+
+        .leaderboard-entry {
+          min-height: 66px;
+          grid-template-columns: 32px 36px minmax(0, 1fr) auto;
+          gap: 9px;
+          padding: 10px;
+        }
+
+        .avatar {
+          width: 36px;
+          height: 36px;
+          font-size: 11px;
+        }
+
+        .entry-rank,
+        .points-value {
+          font-size: 15px;
+        }
+
+        .entry-title,
+        .points-label {
+          font-size: 10px;
+        }
+
+        .see-badge-button {
+          grid-column: 3 / -1;
+          justify-self: stretch;
+        }
+
+        .badge-dialog-content {
+          padding: 42px 22px 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="utility-bar">
+        <div class="sites-link" aria-label="Pega Sites">
+          <span class="app-grid" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+          </span>
+          <span>Pega Sites</span>
+        </div>
+        <div class="utility-actions" aria-label="Account controls">
+          <span aria-hidden="true">Notifications</span>
+          <span class="utility-icon" aria-hidden="true">FW</span>
+        </div>
+      </div>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a class="brand" href="leaderboard-register.html" aria-label="Pega home">
+          <img src="data:image/svg+xml,%3c?xml%20version='1.0'%20encoding='UTF-8'%20standalone='no'?%3e%3csvg%20viewBox='0%200%20311%2068'%20version='1.1'%20xmlns='http://www.w3.org/2000/svg'%20xmlns:xlink='http://www.w3.org/1999/xlink'%3e%3ctitle%3ePega%3c/title%3e%3cg%20stroke='none'%20stroke-width='1'%20fill='none'%20fill-rule='evenodd'%3e%3cg%3e%3cg%3e%3cpath%20d='M136.36,17.098%20L136.173,17.009%20C136.154,16.998%20133.96,16.01%20132.245,17.815%20L132.026,18.046%20L135.539,19.768%20L136.36,17.098%20Z%20M152.441,36.389%20C152.441,36.389%20150.91,39.13%20150.224,40.143%20C149.535,41.164%20147.38,41.798%20145.517,40.908%20C144.665,40.503%20136.694,35.854%20133.644,36.12%20C118.205,37.466%20113.999,31.105%20113.503,30.527%20C113.005,29.949%20112.077,30.218%20112.74,31.355%20C116.127,37.163%20126.15,39.856%20126.15,39.856%20C128.771,46.172%20129.085,50.597%20129.085,50.597%20C126.489,48.574%20123.687,46.869%20120.714,45.453%20C112.768,40.121%20100.329,33.518%2083.207,29.379%20C84.191,15.797%2091.044,-3.837%20123.092,0.806%20C123.092,0.806%20129.522,1.86%20133.809,4.824%20C133.809,4.824%20132.779,5.904%20131.425,7.256%20C130.071,8.605%20131.569,9.471%20131.569,9.471%20L138.338,14.792%20C138.417,17.607%20138.533,18.396%20140.651,20.944%20C142.769,23.487%20151.004,32.112%20152.081,33.266%20C153.329,34.6%20152.441,36.389%20152.441,36.389%20Z%20M78.633,9.915%20C76.938,16.897%2077.068,23.049%2077.939,28.221%20C76.33,27.901%2074.697,27.594%2073.014,27.32%20C37.94,21.612%2027.361,38.899%2031.455,52.916%20C19.86,57.274%208.963,62.263%200.214,67.162%20C13.98,34.146%2043.896,5.087%2069.145,1.268%20C77.389,0.181%2079.708,5.529%2078.633,9.915%20L78.633,9.915%20Z'%20fill='%231F2555'%3e%3c/path%3e%3cpath%20d='M83.492,40.09%20C97.157,39.01%20110.054,40.381%20120.713,45.453%20C112.768,40.121%20100.329,33.518%2083.206,29.379%20C82.864,34.111%2083.23,38.107%2083.492,40.09%20Z%20M81.52,40.262%20C66.209,41.723%2048.105,46.663%2031.455,52.916%20C27.361,38.899%2037.941,21.612%2073.014,27.32%20C74.697,27.594%2076.33,27.901%2077.938,28.221%20C78.77,33.166%2080.276,37.228%2081.52,40.262%20L81.52,40.262%20Z'%20fill='%2386CAC7'%3e%3c/path%3e%3cpath%20d='M286.63,35.039%20L291.379,23.446%20L296.129,35.039%20L286.63,35.039%20Z%20M287.854,14%20L272.536,50%20L280.553,50%20L283.819,41.985%20L298.938,41.985%20L302.204,50%20L310.427,50%20L295.108,14%20L287.854,14%20Z%20M188.647,26.704%20C188.647,29.787%20186.335,32.153%20182.375,32.153%20L176.1,32.153%20L176.1,21.149%20L182.219,21.149%20C186.181,21.149%20188.647,23.052%20188.647,26.601%20L188.647,26.704%20Z%20M182.889,14%20L168.18,14%20L168.18,50%20L176.1,50%20L176.1,39.2%20L182.115,39.2%20C190.19,39.2%20196.673,34.878%20196.673,26.547%20L196.673,26.444%20C196.673,19.09%20191.48,14%20182.889,14%20Z%20M239.764,18.02%20C235.989,21.708%20234.075,26.376%20234.075,31.896%20C234.075,37.421%20235.953,42.054%20239.663,45.675%20C243.366,49.292%20248.022,51.123%20253.503,51.123%20C259.992,51.123%20265.064,49.159%20268.587,45.284%20L268.769,45.08%20L268.769,28.556%20L253.112,28.556%20L253.112,35.244%20L261.279,35.244%20L261.279,41.993%20C259.164,43.252%20256.525,43.891%20253.429,43.891%20C250.221,43.891%20247.454,42.792%20245.203,40.62%20C242.958,38.458%20241.819,35.527%20241.819,31.926%20C241.819,28.322%20242.992,25.379%20245.304,23.18%20C247.624,20.972%20250.538,19.852%20253.966,19.852%20C255.769,19.852%20257.366,20.074%20258.711,20.512%20C259.973,20.922%20261.251,21.667%20262.517,22.712%20L266.897,17.183%20C264.586,15.147%20260.427,12.467%20253.503,12.467%20C248.162,12.467%20243.539,14.336%20239.764,18.02%20Z%20M210.336,35.604%20L225.842,35.604%20L225.842,28.556%20L210.336,28.556%20L210.336,21.042%20L229.623,21.042%20L229.623,14%20L202.466,14%20L202.466,50%20L229.879,50%20L229.879,42.955%20L210.336,42.955%20L210.336,35.604%20L210.336,35.604%20Z'%20fill='%231F2555'%3e%3c/path%3e%3c/g%3e%3c/g%3e%3c/g%3e%3c/svg%3e" alt="Pega" />
+        </a>
+        <div class="nav-links">
+          <a href="#training">My Training</a>
+          <a href="#activity">My Activity</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="leaderboard-page">
+      <div class="leaderboard-shell">
+        <a class="back-link" href="leaderboard-register.html" aria-label="Back to registration">← BACK</a>
+        <header class="leaderboard-header">
+          <p class="eyebrow">PEGA NEXT BEST ACTION CHALLENGE</p>
+          <h1>LEADERBOARD</h1>
+          <p class="rank-summary">Loading rankings...</p>
+        </header>
+
+        <section class="leaderboard-list" aria-label="Player rankings" aria-busy="true">
+          <div class="leaderboard-loading" role="status" aria-label="Loading leaderboard">
+            <span class="loading-spinner" aria-hidden="true"></span>
+          </div>
+        </section>
+
+        <template id="leaderboard-entry-template">
+          <article class="leaderboard-entry"><div class="entry-rank"></div><div class="avatar"></div><div class="entry-info"><div class="entry-name"></div><div class="entry-title">Decision Intelligence Elite</div></div><div class="entry-points"><div class="points-value"></div><div class="points-label">POINTS</div></div><button class="see-badge-button" type="button" hidden>See Badge</button></article>
+        </template>
+
+        <nav class="pagination" aria-label="Leaderboard pages" hidden>
+          <button class="page-button" type="button" aria-label="First page" disabled>«</button>
+          <button class="page-button" type="button" aria-label="Previous page" disabled>‹</button>
+          <span>Page 1 of 502</span>
+          <button class="page-button" type="button" aria-label="Next page">›</button>
+          <button class="page-button" type="button" aria-label="Last page">»</button>
+        </nav>
+      </div>
+    </main>
+
+    <dialog class="badge-dialog" aria-labelledby="badge-player-name">
+      <div class="badge-dialog-content">
+        <div class="badge-share-menu-wrap">
+          <button class="badge-share-menu-trigger" type="button" aria-label="Share badge" aria-haspopup="menu" aria-expanded="false" aria-controls="badge-share-menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"></path></svg>
+          </button>
+          <div class="badge-share-menu" id="badge-share-menu" role="menu" hidden>
+            <button class="badge-share-option" type="button" role="menuitem" data-share="email"><span class="badge-share-option-icon" aria-hidden="true">✉</span><span>Share by email</span></button>
+            <button class="badge-share-option" type="button" role="menuitem" data-share="x"><span class="badge-share-option-icon" aria-hidden="true">X</span><span>X / Twitter</span></button>
+            <button class="badge-share-option" type="button" role="menuitem" data-share="facebook"><span class="badge-share-option-icon" aria-hidden="true">f</span><span>Facebook</span></button>
+          </div>
+        </div>
+        <button class="badge-dialog-close" type="button" aria-label="Close badge">×</button>
+        <div class="badge-mark" aria-hidden="true">NBA</div>
+        <p class="badge-eyebrow">PEGA NEXT BEST ACTION CHALLENGE</p>
+        <h2 class="badge-player-name" id="badge-player-name"></h2>
+        <p class="badge-title">Decision Intelligence Elite</p>
+        <div class="badge-stats">
+          <div class="badge-stat"><strong class="badge-rank"></strong><span>LEADERBOARD RANK</span></div>
+          <div class="badge-stat"><strong class="badge-score"></strong><span>TOTAL POINTS</span></div>
+        </div>
+        <button class="badge-share-button" type="button">Share on LinkedIn</button>
+        <p class="badge-share-status" role="status" aria-live="polite"></p>
+      </div>
+    </dialog>
+
+    <script>
+      const apiBaseUrl = (window.NBA_API_BASE_URL || "https://demox-app.com/api").replace(/\/$/, "");
+      const leaderboardEndpoint = `${apiBaseUrl}/leaderboard`;
+      const leaderboardAccessToken = sessionStorage.getItem("nba_leaderboard_access_token") || "";
+      const currentPlayerId = sessionStorage.getItem("nba_leaderboard_player_id")?.trim().toLowerCase() || "";
+      const leaderboardList = document.querySelector(".leaderboard-list");
+      const rankSummary = document.querySelector(".rank-summary");
+      const pagination = document.querySelector(".pagination");
+      const pageButtons = document.querySelectorAll(".page-button");
+      const pageLabel = document.querySelector(".pagination span");
+      const entryTemplate = document.querySelector("#leaderboard-entry-template").content.firstElementChild;
+      const badgeDialog = document.querySelector(".badge-dialog");
+      const badgePlayerName = badgeDialog.querySelector(".badge-player-name");
+      const badgeRank = badgeDialog.querySelector(".badge-rank");
+      const badgeScore = badgeDialog.querySelector(".badge-score");
+      const badgeShareStatus = badgeDialog.querySelector(".badge-share-status");
+      const badgeShareMenuTrigger = badgeDialog.querySelector(".badge-share-menu-trigger");
+      const badgeShareMenu = badgeDialog.querySelector(".badge-share-menu");
+      const pageSize = 7;
+      let entries = [];
+      let currentPage = 1;
+
+      function getInitials(playerId) {
+        const localPart = playerId.split("@")[0];
+        const parts = localPart.split(/[._-]+/).filter(Boolean);
+        return (parts.length > 1
+          ? `${parts[0][0]}${parts[1][0]}`
+          : localPart.slice(0, 2)).toUpperCase() || "?";
+      }
+
+      function createEntry(entry, rank) {
+        const playerId = String(entry.PlayerId || "Anonymous player");
+        const isCurrentUser = currentPlayerId && playerId.trim().toLowerCase() === currentPlayerId;
+        const row = entryTemplate.cloneNode(true);
+
+        row.classList.toggle("current-user", Boolean(isCurrentUser));
+        if (isCurrentUser) {
+          row.setAttribute("aria-label", "Your rank");
+        } else {
+          row.removeAttribute("aria-label");
+        }
+
+        row.querySelector(".entry-rank").textContent = rank;
+        row.querySelector(".avatar").textContent = getInitials(playerId);
+        const fullName = [entry.FirstName, entry.LastName].filter(Boolean).join(" ");
+        row.querySelector(".entry-name").textContent = `${fullName || playerId}${isCurrentUser ? " (YOU)" : ""}`;
+        row.querySelector(".entry-title").textContent = entry.Title || "Decision Intelligence Elite";
+        row.querySelector(".points-value").textContent = Number(entry.Score || 0).toLocaleString();
+        const badgeButton = row.querySelector(".see-badge-button");
+        badgeButton.hidden = !isCurrentUser;
+        if (isCurrentUser) {
+          badgeButton.addEventListener("click", () => {
+            badgePlayerName.textContent = playerId;
+            badgeRank.textContent = `#${rank}`;
+            badgeScore.textContent = Number(entry.Score || 0).toLocaleString();
+            badgeDialog.showModal();
+          });
+        }
+        return row;
+      }
+
+      function getBadgeShareDetails() {
+        const pageUrl = window.location.href;
+        const challengeUrl = new URL("/nba-game/", window.location.origin).toString();
+        const message = [
+          "I ranked in the Top 10% of players in the Pega Next Best Action Challenge and earned the Decision Intelligence Elite badge.",
+          "Think you can beat my score?",
+          "Join the challenge and find out.",
+          `Play now → ${challengeUrl}`,
+          "#AI #CustomerExperience #Decisioning #NextBestAction #Challenge",
+        ].join("\n");
+        return { pageUrl, message };
+      }
+
+      function closeBadgeShareMenu() {
+        badgeShareMenu.hidden = true;
+        badgeShareMenuTrigger.setAttribute("aria-expanded", "false");
+      }
+
+      badgeShareMenuTrigger.addEventListener("click", event => {
+        event.stopPropagation();
+        const willOpen = badgeShareMenu.hidden;
+        badgeShareMenu.hidden = !willOpen;
+        badgeShareMenuTrigger.setAttribute("aria-expanded", String(willOpen));
+        if (willOpen) badgeShareMenu.querySelector("[role='menuitem']").focus();
+      });
+
+      badgeShareMenu.addEventListener("click", event => {
+        const option = event.target.closest("[data-share]");
+        if (!option) return;
+
+        const { pageUrl, message } = getBadgeShareDetails();
+        let destination;
+        if (option.dataset.share === "email") {
+          destination = `mailto:?subject=${encodeURIComponent("My Decision Intelligence Elite badge")}&body=${encodeURIComponent(`${message}\n\nView my badge: ${pageUrl}`)}`;
+          window.location.href = destination;
+        } else if (option.dataset.share === "x") {
+          destination = new URL("https://twitter.com/intent/tweet");
+          destination.searchParams.set("text", message);
+          destination.searchParams.set("url", pageUrl);
+          window.open(destination.toString(), "_blank", "noopener,noreferrer");
+        } else {
+          destination = new URL("https://www.facebook.com/sharer/sharer.php");
+          destination.searchParams.set("u", pageUrl);
+          window.open(destination.toString(), "_blank", "noopener,noreferrer");
+        }
+        closeBadgeShareMenu();
+      });
+
+      document.addEventListener("click", event => {
+        if (!event.target.closest(".badge-share-menu-wrap")) closeBadgeShareMenu();
+      });
+
+      badgeDialog.addEventListener("close", closeBadgeShareMenu);
+
+      badgeDialog.querySelector(".badge-dialog-close").addEventListener("click", () => badgeDialog.close());
+      badgeDialog.querySelector(".badge-share-button").addEventListener("click", () => {
+        const { pageUrl, message: shareMessage } = getBadgeShareDetails();
+        const webShareUrl = new URL("https://www.linkedin.com/sharing/share-offsite/");
+        webShareUrl.searchParams.set("url", pageUrl);
+
+        const copyField = document.createElement("textarea");
+        copyField.value = shareMessage;
+        copyField.setAttribute("readonly", "");
+        copyField.style.position = "fixed";
+        copyField.style.opacity = "0";
+        document.body.append(copyField);
+        copyField.select();
+        const messageCopied = document.execCommand("copy");
+        copyField.remove();
+        navigator.clipboard?.writeText(shareMessage).catch(() => {});
+        badgeShareStatus.textContent = messageCopied
+          ? "Message copied. Paste it into LinkedIn."
+          : "Copy the message, then paste it into LinkedIn.";
+
+        if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+          window.open(webShareUrl.toString(), "_blank", "noopener,noreferrer");
+          return;
+        }
+
+        const appShareUrl = new URL("linkedin://shareArticle");
+        appShareUrl.searchParams.set("mini", "true");
+        appShareUrl.searchParams.set("url", pageUrl);
+
+        const fallbackTimer = window.setTimeout(() => {
+          window.location.assign(webShareUrl.toString());
+        }, 1400);
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) window.clearTimeout(fallbackTimer);
+        }, { once: true });
+        window.location.assign(appShareUrl.toString());
+      });
+      badgeDialog.addEventListener("click", event => {
+        if (event.target === badgeDialog) badgeDialog.close();
+      });
+
+      function updateRankSummary() {
+        const currentPlayerIndex = entries.findIndex(entry =>
+          String(entry.PlayerId || "").trim().toLowerCase() === currentPlayerId
+        );
+
+        rankSummary.replaceChildren();
+        if (currentPlayerIndex < 0) {
+          rankSummary.textContent = `${entries.length} ranked player${entries.length === 1 ? "" : "s"}`;
+          return;
+        }
+
+        rankSummary.append("Rank ");
+        const rank = document.createElement("strong");
+        rank.textContent = `#${currentPlayerIndex + 1} of ${entries.length}`;
+        const title = document.createElement("span");
+        title.textContent = "DECISION INTELLIGENCE ELITE";
+        rankSummary.append(rank, " · ", title);
+      }
+
+      function renderLeaderboard() {
+        const totalPages = Math.max(1, Math.ceil(entries.length / pageSize));
+        currentPage = Math.max(1, Math.min(currentPage, totalPages));
+        const startIndex = (currentPage - 1) * pageSize;
+        const rows = entries
+          .slice(startIndex, startIndex + pageSize)
+          .map((entry, index) => createEntry(entry, startIndex + index + 1));
+
+        leaderboardList.replaceChildren(...rows);
+        leaderboardList.setAttribute("aria-busy", "false");
+        pagination.hidden = false;
+        pageLabel.textContent = `Page ${currentPage} of ${totalPages}`;
+        pageButtons[0].disabled = currentPage === 1;
+        pageButtons[1].disabled = currentPage === 1;
+        pageButtons[2].disabled = currentPage === totalPages;
+        pageButtons[3].disabled = currentPage === totalPages;
+        updateRankSummary();
+      }
+
+      function changePage(page) {
+        currentPage = page;
+        renderLeaderboard();
+        document.querySelector(".leaderboard-header").scrollIntoView({ behavior: "smooth" });
+      }
+
+      pageButtons[0].addEventListener("click", () => changePage(1));
+      pageButtons[1].addEventListener("click", () => changePage(currentPage - 1));
+      pageButtons[2].addEventListener("click", () => changePage(currentPage + 1));
+      pageButtons[3].addEventListener("click", () => changePage(Math.ceil(entries.length / pageSize)));
+
+      async function loadLeaderboard() {
+        try {
+          const response = await fetch(leaderboardEndpoint, {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${leaderboardAccessToken}`,
+            },
+            body: JSON.stringify({}),
+          });
+          if (!response.ok) throw new Error(`Leaderboard request failed: ${response.status}`);
+
+          const data = await response.json();
+          if (!Array.isArray(data)) throw new Error("Leaderboard response must be an array");
+
+          entries = data
+            .filter(entry => String(entry?.PlayerId || "").trim())
+            .sort((first, second) => Number(second.Score || 0) - Number(first.Score || 0));
+
+          if (!entries.length) {
+            leaderboardList.replaceChildren();
+            leaderboardList.setAttribute("aria-busy", "false");
+            rankSummary.textContent = "No ranked players yet";
+            pageLabel.textContent = "Page 1 of 1";
+            pageButtons.forEach(button => { button.disabled = true; });
+            return;
+          }
+
+          const currentPlayerIndex = entries.findIndex(entry =>
+            String(entry.PlayerId || "").trim().toLowerCase() === currentPlayerId
+          );
+          if (currentPlayerIndex >= 0) currentPage = Math.floor(currentPlayerIndex / pageSize) + 1;
+          renderLeaderboard();
+        } catch (error) {
+          console.error("Unable to load leaderboard:", error);
+          leaderboardList.replaceChildren();
+          leaderboardList.setAttribute("aria-busy", "false");
+          rankSummary.textContent = "Leaderboard temporarily unavailable";
+        }
+      }
+
+      loadLeaderboard();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Create a Pega account to access the NBA Challenge leaderboard." />
+    <title>NBA Challenge | Leaderboard registration</title>
+    <style>
+      :root {
+        color: #101828;
+        font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+        font-synthesis: none;
+        --navy: #072a65;
+        --navy-deep: #041d4f;
+        --blue: #245fc5;
+        --cyan: #00c4ba;
+        --border: #d2d7e1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        min-height: 100vh;
+        background: var(--navy);
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      a,
+      button {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .utility-bar {
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        color: #2860bf;
+        background: #f3f4f6;
+        font-size: 14px;
+      }
+
+      .sites-link,
+      .utility-actions {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .app-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 6px);
+        gap: 3px;
+      }
+
+      .app-grid span {
+        width: 6px;
+        height: 6px;
+        background: currentColor;
+      }
+
+      .icon-button {
+        width: 32px;
+        height: 32px;
+        border: 0;
+        color: #2860bf;
+        background: transparent;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        padding: 0;
+      }
+
+      .bell {
+        width: 13px;
+        height: 17px;
+        border-radius: 8px 8px 4px 4px;
+        background: currentColor;
+        position: relative;
+      }
+
+      .bell::before {
+        content: "";
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: currentColor;
+        top: -3px;
+        left: 5px;
+      }
+
+      .user-icon {
+        width: 26px;
+        height: 26px;
+        border: 1.5px solid currentColor;
+        border-radius: 50%;
+        position: relative;
+      }
+
+      .user-icon::before {
+        content: "";
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border: 1.5px solid currentColor;
+        border-radius: 50%;
+        top: 4px;
+        left: 7px;
+      }
+
+      .user-icon::after {
+        content: "";
+        position: absolute;
+        width: 14px;
+        height: 7px;
+        border: 1.5px solid currentColor;
+        border-bottom: 0;
+        border-radius: 12px 12px 0 0;
+        left: 4px;
+        bottom: 3px;
+      }
+
+      .main-nav {
+        height: 87px;
+        padding: 0 34px;
+        display: flex;
+        align-items: center;
+        gap: 55px;
+        background: #fff;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+      }
+
+      .brand img {
+        display: block;
+        width: 154px;
+        height: auto;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+      }
+
+      .nav-links a {
+        color: #14151b;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .hero {
+        min-height: calc(100vh - 133px);
+        position: relative;
+        overflow: hidden;
+        padding: 47px clamp(34px, 5vw, 82px) 56px;
+        color: #fff;
+        background:
+          radial-gradient(circle at 72% 14%, rgba(0, 179, 186, 0.26), transparent 38%),
+          linear-gradient(110deg, var(--navy-deep) 0%, #073776 50%, #006a79 120%);
+      }
+
+      .globe-grid {
+        position: absolute;
+        width: 860px;
+        height: 860px;
+        right: -120px;
+        top: -365px;
+        border: 1px solid rgba(0, 196, 186, 0.34);
+        border-radius: 50%;
+        background:
+          repeating-radial-gradient(circle at 50% 50%, transparent 0 77px, rgba(0, 196, 186, 0.25) 78px 79px),
+          repeating-linear-gradient(90deg, transparent 0 68px, rgba(0, 196, 186, 0.2) 69px 70px);
+        transform: rotate(6deg);
+        pointer-events: none;
+      }
+
+      .hero-layout {
+        position: relative;
+        z-index: 1;
+        max-width: 1370px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(420px, 0.9fr) minmax(520px, 1.1fr);
+        align-items: start;
+        gap: clamp(40px, 7vw, 110px);
+      }
+
+      .visual-column {
+        padding-top: 32px;
+      }
+
+      .screen-collage {
+        height: 315px;
+        position: relative;
+        margin: 0 auto 44px;
+        max-width: 530px;
+      }
+
+      .screen {
+        position: absolute;
+        background: #e9eef5;
+        border: 6px solid #d8dee9;
+        border-top-width: 15px;
+        box-shadow: 0 14px 28px rgba(0, 7, 36, 0.32);
+        overflow: hidden;
+      }
+
+      .screen::before {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        background:
+          linear-gradient(90deg, #2562b7 0 17%, transparent 17%),
+          linear-gradient(#fff 0 21%, #d4e1ef 21% 25%, #fff 25% 55%, #f4b52e 55% 58%, #fff 58%);
+      }
+
+      .screen-one {
+        width: 195px;
+        height: 112px;
+        left: 34px;
+        top: 78px;
+        transform: rotate(-4deg);
+      }
+
+      .screen-two {
+        width: 190px;
+        height: 135px;
+        right: 26px;
+        top: 22px;
+        transform: rotate(-3deg);
+      }
+
+      .screen-two::before {
+        background:
+          radial-gradient(circle at 35% 45%, #ecaa29 0 22px, #136f88 23px 38px, transparent 39px),
+          linear-gradient(#fff 0 18%, #d9e2ee 18% 22%, #fff 22%);
+      }
+
+      .desktop {
+        width: 235px;
+        height: 157px;
+        left: 158px;
+        bottom: 45px;
+        border: 9px solid #d6dce7;
+        border-top-width: 17px;
+        background: #fff;
+        transform: perspective(500px) rotateY(-3deg);
+      }
+
+      .desktop::before {
+        background:
+          linear-gradient(100deg, transparent 0 73%, #ef9d29 74% 77%, transparent 78%),
+          linear-gradient(#f4b52e 0 50%, #08336f 50%);
+      }
+
+      .desktop::after {
+        content: "";
+        position: absolute;
+        width: 80px;
+        height: 42px;
+        background: #cbd1dc;
+        left: 68px;
+        bottom: -50px;
+        clip-path: polygon(36% 0, 70% 0, 75% 66%, 100% 82%, 100% 100%, 0 100%, 0 82%, 29% 66%);
+      }
+
+      .accent-squares {
+        position: absolute;
+        left: 146px;
+        top: 18px;
+        display: grid;
+        grid-template-columns: repeat(2, 13px);
+        gap: 3px;
+        transform: rotate(-3deg);
+      }
+
+      .accent-squares span {
+        width: 13px;
+        height: 13px;
+        background: #f49b2e;
+      }
+
+      .benefits {
+        display: grid;
+        gap: 38px;
+        max-width: 570px;
+      }
+
+      .benefit {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 16px;
+        align-items: start;
+        font-size: 18px;
+        line-height: 1.5;
+      }
+
+      .check {
+        width: 34px;
+        height: 34px;
+        border: 2px solid var(--cyan);
+        border-radius: 50%;
+        position: relative;
+      }
+
+      .check::after {
+        content: "";
+        position: absolute;
+        width: 13px;
+        height: 7px;
+        border-left: 2px solid var(--cyan);
+        border-bottom: 2px solid var(--cyan);
+        transform: rotate(-45deg);
+        left: 9px;
+        top: 9px;
+      }
+
+      .benefit p {
+        margin: 0;
+      }
+
+      .benefit strong {
+        font-weight: 700;
+      }
+
+      .registration-card {
+        color: #141820;
+        background: #fff;
+        border-radius: 5px;
+        padding: 24px 28px 25px;
+        box-shadow: 0 3px 10px rgba(0, 13, 45, 0.24);
+      }
+
+      .registration-card h1 {
+        margin: 0 0 26px;
+        color: #06265c;
+        font-size: 27px;
+        line-height: 1.25;
+        letter-spacing: 0;
+      }
+
+      .form-group {
+        margin-bottom: 7px;
+      }
+
+      .field-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 14px;
+      }
+
+      label {
+        display: block;
+        margin: 0 0 6px 3px;
+        color: #153b77;
+      }
+
+      input,
+      select {
+        width: 100%;
+        height: 49px;
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        padding: 0 14px;
+        color: #151820;
+        background: #fff;
+        outline: none;
+      }
+
+      input::placeholder {
+        color: #9297a5;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: #3774d3;
+        box-shadow: 0 0 0 2px rgba(55, 116, 211, 0.18);
+      }
+
+      .helper {
+        min-height: 21px;
+        margin: 6px 0 14px;
+        font-size: 14px;
+      }
+
+      .helper::before {
+        content: "i";
+        display: inline-grid;
+        place-items: center;
+        width: 14px;
+        height: 14px;
+        border: 1px solid currentColor;
+        border-radius: 50%;
+        margin-right: 4px;
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .helper.error {
+        color: #bb202b;
+      }
+
+      .captcha-group {
+        margin: 19px 0 17px;
+        padding: 14px;
+        border: 1px solid #d2d7e1;
+        border-radius: 3px;
+        background: #f7f9fc;
+      }
+
+      .captcha-label {
+        margin-left: 0;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .captcha-row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+
+      .captcha-question {
+        flex: 1;
+        min-width: 0;
+        color: #153b77;
+        font-weight: 600;
+      }
+
+      .captcha-input {
+        width: 84px;
+        height: 42px;
+        padding: 0 10px;
+      }
+
+      .captcha-refresh {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        color: var(--blue);
+        background: #fff;
+        cursor: pointer;
+        font-size: 20px;
+      }
+
+      .captcha-refresh:hover {
+        background: #eef4ff;
+      }
+
+      .captcha-helper {
+        margin: 7px 0 0;
+        color: #687386;
+        font-size: 13px;
+      }
+
+      .captcha-helper.error {
+        color: #bb202b;
+      }
+
+      .honeypot {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      .country-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 27px;
+        margin-bottom: 13px;
+        font-size: 18px;
+      }
+
+      .country-row strong {
+        font-weight: 700;
+      }
+
+      .link-button {
+        border: 0;
+        padding: 3px;
+        color: var(--blue);
+        background: transparent;
+        cursor: pointer;
+        font-size: 17px;
+      }
+
+      .submit-button {
+        height: 49px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin: 0 auto;
+        padding: 0 27px;
+        border: 0;
+        border-radius: 2px;
+        color: #fff;
+        background: var(--blue);
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .submit-button:disabled {
+        color: #3d4048;
+        background: #dde0e8;
+        cursor: not-allowed;
+      }
+
+      .paper-plane {
+        display: inline-block;
+        transform: rotate(-18deg);
+        font-size: 19px;
+        line-height: 1;
+      }
+
+      .login-row {
+        margin: 25px 0 0;
+        text-align: center;
+      }
+
+      .login-row a {
+        color: var(--blue);
+        text-decoration: none;
+        font-size: 18px;
+      }
+
+      dialog {
+        width: min(420px, calc(100% - 32px));
+        border: 0;
+        border-radius: 5px;
+        padding: 25px;
+        box-shadow: 0 20px 60px rgba(0, 13, 45, 0.4);
+      }
+
+      dialog::backdrop {
+        background: rgba(2, 18, 52, 0.6);
+      }
+
+      dialog h2 {
+        margin: 0 0 18px;
+        color: #06265c;
+        font-size: 21px;
+      }
+
+      .dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .dialog-button {
+        min-height: 40px;
+        padding: 0 18px;
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        background: #fff;
+        cursor: pointer;
+      }
+
+      .dialog-button.primary {
+        border-color: var(--blue);
+        color: #fff;
+        background: var(--blue);
+      }
+
+      .status {
+        margin: 14px 0 0;
+        color: #14704b;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      .status.error {
+        color: #bb202b;
+      }
+
+      @media (max-width: 900px) {
+        .hero-layout {
+          grid-template-columns: 1fr;
+          gap: 34px;
+        }
+
+        .registration-card {
+          grid-row: 1;
+          max-width: 640px;
+          width: 100%;
+          margin: 0 auto;
+        }
+
+        .visual-column {
+          padding-top: 0;
+        }
+
+        .screen-collage {
+          display: none;
+        }
+
+        .benefits {
+          margin: 0 auto;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .utility-bar {
+          height: 40px;
+          padding: 0 16px;
+        }
+
+        .main-nav {
+          height: 70px;
+          padding: 0 18px;
+          gap: 24px;
+        }
+
+        .brand {
+          flex: 0 1 124px;
+        }
+
+        .brand img {
+          width: 124px;
+          max-width: 100%;
+        }
+
+        .nav-links {
+          gap: 15px;
+          margin-left: auto;
+          font-size: 14px;
+        }
+
+        .nav-links a:first-child {
+          display: none;
+        }
+
+        .hero {
+          min-height: calc(100vh - 110px);
+          padding: 24px 16px 40px;
+        }
+
+        .globe-grid {
+          right: -560px;
+        }
+
+        .registration-card {
+          padding: 22px 18px 24px;
+        }
+
+        .registration-card h1 {
+          font-size: 23px;
+          margin-bottom: 22px;
+        }
+
+        .field-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .country-row {
+          font-size: 16px;
+        }
+
+        .benefits {
+          gap: 25px;
+        }
+
+        .benefit {
+          grid-template-columns: 30px 1fr;
+          gap: 12px;
+          font-size: 16px;
+        }
+
+        .check {
+          width: 30px;
+          height: 30px;
+        }
+
+        .check::after {
+          left: 7px;
+          top: 7px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="utility-bar">
+        <div class="sites-link" aria-label="Pega Sites">
+          <span class="app-grid" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+          </span>
+          <span>Pega Sites</span>
+        </div>
+        <div class="utility-actions">
+          <button class="icon-button" type="button" aria-label="Notifications">
+            <span class="bell" aria-hidden="true"></span>
+          </button>
+          <button class="icon-button" type="button" aria-label="User profile">
+            <span class="user-icon" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a class="brand" href="#" aria-label="Pega home">
+          <img src="data:image/svg+xml,%3c?xml%20version='1.0'%20encoding='UTF-8'%20standalone='no'?%3e%3csvg%20viewBox='0%200%20311%2068'%20version='1.1'%20xmlns='http://www.w3.org/2000/svg'%20xmlns:xlink='http://www.w3.org/1999/xlink'%3e%3ctitle%3ePega%3c/title%3e%3cg%20stroke='none'%20stroke-width='1'%20fill='none'%20fill-rule='evenodd'%3e%3cg%3e%3cg%3e%3cpath%20d='M136.36,17.098%20L136.173,17.009%20C136.154,16.998%20133.96,16.01%20132.245,17.815%20L132.026,18.046%20L135.539,19.768%20L136.36,17.098%20Z%20M152.441,36.389%20C152.441,36.389%20150.91,39.13%20150.224,40.143%20C149.535,41.164%20147.38,41.798%20145.517,40.908%20C144.665,40.503%20136.694,35.854%20133.644,36.12%20C118.205,37.466%20113.999,31.105%20113.503,30.527%20C113.005,29.949%20112.077,30.218%20112.74,31.355%20C116.127,37.163%20126.15,39.856%20126.15,39.856%20C128.771,46.172%20129.085,50.597%20129.085,50.597%20C126.489,48.574%20123.687,46.869%20120.714,45.453%20C112.768,40.121%20100.329,33.518%2083.207,29.379%20C84.191,15.797%2091.044,-3.837%20123.092,0.806%20C123.092,0.806%20129.522,1.86%20133.809,4.824%20C133.809,4.824%20132.779,5.904%20131.425,7.256%20C130.071,8.605%20131.569,9.471%20131.569,9.471%20L138.338,14.792%20C138.417,17.607%20138.533,18.396%20140.651,20.944%20C142.769,23.487%20151.004,32.112%20152.081,33.266%20C153.329,34.6%20152.441,36.389%20152.441,36.389%20Z%20M78.633,9.915%20C76.938,16.897%2077.068,23.049%2077.939,28.221%20C76.33,27.901%2074.697,27.594%2073.014,27.32%20C37.94,21.612%2027.361,38.899%2031.455,52.916%20C19.86,57.274%208.963,62.263%200.214,67.162%20C13.98,34.146%2043.896,5.087%2069.145,1.268%20C77.389,0.181%2079.708,5.529%2078.633,9.915%20L78.633,9.915%20Z'%20fill='%231F2555'%3e%3c/path%3e%3cpath%20d='M83.492,40.09%20C97.157,39.01%20110.054,40.381%20120.713,45.453%20C112.768,40.121%20100.329,33.518%2083.206,29.379%20C82.864,34.111%2083.23,38.107%2083.492,40.09%20Z%20M81.52,40.262%20C66.209,41.723%2048.105,46.663%2031.455,52.916%20C27.361,38.899%2037.941,21.612%2073.014,27.32%20C74.697,27.594%2076.33,27.901%2077.938,28.221%20C78.77,33.166%2080.276,37.228%2081.52,40.262%20L81.52,40.262%20Z'%20fill='%2386CAC7'%3e%3c/path%3e%3cpath%20d='M286.63,35.039%20L291.379,23.446%20L296.129,35.039%20L286.63,35.039%20Z%20M287.854,14%20L272.536,50%20L280.553,50%20L283.819,41.985%20L298.938,41.985%20L302.204,50%20L310.427,50%20L295.108,14%20L287.854,14%20Z%20M188.647,26.704%20C188.647,29.787%20186.335,32.153%20182.375,32.153%20L176.1,32.153%20L176.1,21.149%20L182.219,21.149%20C186.181,21.149%20188.647,23.052%20188.647,26.601%20L188.647,26.704%20Z%20M182.889,14%20L168.18,14%20L168.18,50%20L176.1,50%20L176.1,39.2%20L182.115,39.2%20C190.19,39.2%20196.673,34.878%20196.673,26.547%20L196.673,26.444%20C196.673,19.09%20191.48,14%20182.889,14%20Z%20M239.764,18.02%20C235.989,21.708%20234.075,26.376%20234.075,31.896%20C234.075,37.421%20235.953,42.054%20239.663,45.675%20C243.366,49.292%20248.022,51.123%20253.503,51.123%20C259.992,51.123%20265.064,49.159%20268.587,45.284%20L268.769,45.08%20L268.769,28.556%20L253.112,28.556%20L253.112,35.244%20L261.279,35.244%20L261.279,41.993%20C259.164,43.252%20256.525,43.891%20253.429,43.891%20C250.221,43.891%20247.454,42.792%20245.203,40.62%20C242.958,38.458%20241.819,35.527%20241.819,31.926%20C241.819,28.322%20242.992,25.379%20245.304,23.18%20C247.624,20.972%20250.538,19.852%20253.966,19.852%20C255.769,19.852%20257.366,20.074%20258.711,20.512%20C259.973,20.922%20261.251,21.667%20262.517,22.712%20L266.897,17.183%20C264.586,15.147%20260.427,12.467%20253.503,12.467%20C248.162,12.467%20243.539,14.336%20239.764,18.02%20Z%20M210.336,35.604%20L225.842,35.604%20L225.842,28.556%20L210.336,28.556%20L210.336,21.042%20L229.623,21.042%20L229.623,14%20L202.466,14%20L202.466,50%20L229.879,50%20L229.879,42.955%20L210.336,42.955%20L210.336,35.604%20L210.336,35.604%20Z'%20fill='%231F2555'%3e%3c/path%3e%3c/g%3e%3c/g%3e%3c/g%3e%3c/svg%3e" alt="Pega" />
+        </a>
+        <div class="nav-links">
+          <a href="#training">My Training</a>
+          <a href="#activity">My Activity</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="hero">
+      <div class="globe-grid" aria-hidden="true"></div>
+      <div class="hero-layout">
+        <section class="visual-column" aria-label="Leaderboard benefits">
+          <div class="screen-collage" aria-hidden="true">
+            <div class="accent-squares"><span></span><span></span><span></span></div>
+            <div class="screen screen-one"></div>
+            <div class="screen screen-two"></div>
+            <div class="screen desktop"></div>
+          </div>
+          <div class="benefits">
+            <div class="benefit">
+              <span class="check" aria-hidden="true"></span>
+              <p><strong>Track your leaderboard ranking and see how</strong> you stack up against other players in the NBA Challenge</p>
+            </div>
+            <div class="benefit">
+              <span class="check" aria-hidden="true"></span>
+              <p><strong>Compare your decisions</strong> with Pega's AI recommendations and learn from every round.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="registration-card" aria-labelledby="registration-title">
+          <h1 id="registration-title">Create a Pega account and see the leaderboard</h1>
+          <form id="registration-form" novalidate>
+            <div class="field-grid">
+              <div class="form-group">
+                <label for="first-name">First Name</label>
+                <input id="first-name" name="firstName" type="text" autocomplete="given-name" placeholder="Provide first name" required />
+              </div>
+              <div class="form-group">
+                <label for="last-name">Last Name</label>
+                <input id="last-name" name="lastName" type="text" autocomplete="family-name" placeholder="Provide last name" required />
+              </div>
+              <div class="form-group">
+                <label for="organization">Organization</label>
+                <input id="organization" name="organization" type="text" autocomplete="organization" placeholder="Provide organization" required />
+              </div>
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input id="title" name="title" type="text" autocomplete="organization-title" placeholder="Provide title" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">E-mail address</label>
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="Provide E-mail address" required />
+            </div>
+            <p class="helper" id="email-helper">A verification link will be sent via e-mail</p>
+            <div class="captcha-group">
+              <label class="captcha-label" for="captcha-answer">Security check</label>
+              <div class="captcha-row">
+                <span class="captcha-question" id="captcha-question" aria-live="polite"></span>
+                <input class="captcha-input" id="captcha-answer" name="captchaAnswer" type="number" inputmode="numeric" autocomplete="off" aria-describedby="captcha-helper" required />
+                <button class="captcha-refresh" id="captcha-refresh" type="button" aria-label="Get a new security question" title="Get a new security question">↻</button>
+              </div>
+              <p class="captcha-helper" id="captcha-helper">Enter the answer to continue.</p>
+            </div>
+            <div class="honeypot" aria-hidden="true">
+              <label for="website">Website</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+            </div>
+            <div class="country-row">
+              <strong>Country: <span id="country-name">Poland</span></strong>
+              <button class="link-button" id="change-country" type="button">Change</button>
+            </div>
+            <button class="submit-button" id="submit-button" type="submit" disabled>
+              <span class="paper-plane" aria-hidden="true">⌁</span>
+              <span>Send verification link</span>
+            </button>
+            <p class="status" id="form-status" role="status" hidden></p>
+          </form>
+          <p class="login-row"><a href="#login">Already have an account? Log in</a></p>
+        </section>
+      </div>
+    </main>
+
+    <dialog id="country-dialog" aria-labelledby="country-title">
+      <form method="dialog" id="country-form">
+        <h2 id="country-title">Choose your country</h2>
+        <label for="country-select">Country</label>
+        <select id="country-select">
+          <option>Australia</option>
+          <option>Canada</option>
+          <option>France</option>
+          <option>Germany</option>
+          <option>India</option>
+          <option>Poland</option>
+          <option>United Kingdom</option>
+          <option>United States</option>
+        </select>
+        <div class="dialog-actions">
+          <button class="dialog-button" value="cancel">Cancel</button>
+          <button class="dialog-button primary" id="save-country" value="default">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script>
+      const firstNameInput = document.querySelector("#first-name");
+      const lastNameInput = document.querySelector("#last-name");
+      const organizationInput = document.querySelector("#organization");
+      const titleInput = document.querySelector("#title");
+      const emailInput = document.querySelector("#email");
+      const emailHelper = document.querySelector("#email-helper");
+      const captchaQuestion = document.querySelector("#captcha-question");
+      const captchaAnswer = document.querySelector("#captcha-answer");
+      const captchaHelper = document.querySelector("#captcha-helper");
+      const captchaRefresh = document.querySelector("#captcha-refresh");
+      const honeypotInput = document.querySelector("#website");
+      const submitButton = document.querySelector("#submit-button");
+      const registrationForm = document.querySelector("#registration-form");
+      const formStatus = document.querySelector("#form-status");
+      const countryDialog = document.querySelector("#country-dialog");
+      const countrySelect = document.querySelector("#country-select");
+      const countryName = document.querySelector("#country-name");
+      const apiBaseUrl = (window.NBA_API_BASE_URL || "https://demox-app.com/api").replace(/\/$/, "");
+      const sessionToken = sessionStorage.getItem("nba_session_jwt") || "";
+      const captchaEndpoint = `${apiBaseUrl}/captcha`;
+      const registrationEndpoint = `${apiBaseUrl}/register`;
+      let captchaChallengeId = "";
+      const formStartedAt = Date.now();
+
+      async function createCaptcha() {
+        captchaChallengeId = "";
+        captchaQuestion.textContent = "Loading security question...";
+        captchaAnswer.value = "";
+        captchaAnswer.setCustomValidity("Please complete the security check.");
+        captchaHelper.textContent = "Enter the answer to continue.";
+        captchaHelper.classList.remove("error");
+        updateSubmitState();
+
+        try {
+          const response = await fetch(captchaEndpoint, { headers: { Accept: "application/json" } });
+          if (!response.ok) throw new Error(`Captcha request failed: ${response.status}`);
+          const challenge = await response.json();
+          captchaChallengeId = challenge.challengeId || "";
+          captchaQuestion.textContent = challenge.question || "Security question unavailable";
+          captchaAnswer.setCustomValidity("");
+        } catch (error) {
+          console.error("Unable to load CAPTCHA:", error);
+          captchaQuestion.textContent = "Security question unavailable";
+          captchaAnswer.setCustomValidity("Unable to load the security check.");
+          captchaHelper.textContent = "Refresh the security question and try again.";
+          captchaHelper.classList.add("error");
+        }
+        updateSubmitState();
+      }
+
+      function updateSubmitState() {
+        const requiredFieldsValid = [
+          firstNameInput,
+          lastNameInput,
+          organizationInput,
+          titleInput,
+          emailInput,
+          captchaAnswer,
+        ].every((input) => input.value.trim() && input.validity.valid);
+        submitButton.disabled = !requiredFieldsValid;
+      }
+
+      function validateCaptcha() {
+        const isReady = Boolean(captchaChallengeId && captchaAnswer.value.trim());
+        captchaAnswer.setCustomValidity(isReady ? "" : "Please complete the security check.");
+        captchaHelper.textContent = isReady
+          ? "Security check ready."
+          : "Enter the answer to continue.";
+        captchaHelper.classList.toggle("error", !isReady);
+        return isReady;
+      }
+
+      [firstNameInput, lastNameInput, organizationInput, titleInput, emailInput].forEach((input) => {
+        input.addEventListener("input", () => {
+          const hasValue = emailInput.value.trim().length > 0;
+          const isValid = emailInput.validity.valid;
+          emailHelper.textContent = hasValue && !isValid
+            ? "Enter a valid e-mail address"
+            : "A verification link will be sent via e-mail";
+          emailHelper.classList.toggle("error", hasValue && !isValid);
+          formStatus.hidden = true;
+          updateSubmitState();
+        });
+      });
+
+      captchaAnswer.addEventListener("input", () => {
+        validateCaptcha();
+        updateSubmitState();
+        formStatus.hidden = true;
+      });
+
+      captchaRefresh.addEventListener("click", createCaptcha);
+
+      registrationForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!registrationForm.reportValidity() || !validateCaptcha()) return;
+
+        if (honeypotInput.value || Date.now() - formStartedAt < 1200) {
+          formStatus.textContent = "Please wait a moment and try again.";
+          formStatus.classList.add("error");
+          formStatus.hidden = false;
+          return;
+        }
+
+        if (!sessionToken) {
+          formStatus.textContent = "This registration link is missing its session token. Return to the game and try again.";
+          formStatus.classList.add("error");
+          formStatus.hidden = false;
+          return;
+        }
+
+        const buttonLabel = submitButton.querySelector("span:last-child");
+        submitButton.disabled = true;
+        buttonLabel.textContent = "Sending verification link...";
+        formStatus.hidden = true;
+
+        try {
+          const response = await fetch(registrationEndpoint, {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionToken}`,
+            },
+            body: JSON.stringify({
+              PlayerID: emailInput.value.trim(),
+              FirstName: firstNameInput.value.trim(),
+              LastName: lastNameInput.value.trim(),
+              Organization: organizationInput.value.trim(),
+              Title: titleInput.value.trim(),
+              Country: countryName.textContent.trim(),
+              CaptchaChallengeId: captchaChallengeId,
+              CaptchaAnswer: captchaAnswer.value.trim(),
+              Status: "Claimed",
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Game session claim failed: ${response.status}`);
+          }
+
+          const result = await response.json();
+          formStatus.textContent = "Check your e-mail and click the verification link to access the leaderboard.";
+          formStatus.classList.remove("error");
+          formStatus.hidden = false;
+          if (result.verificationUrl) {
+            const link = document.createElement("a");
+            link.href = result.verificationUrl;
+            link.textContent = " Open the local verification link";
+            link.style.color = "inherit";
+            formStatus.append(" ", link);
+          }
+        } catch (error) {
+          console.error("Unable to claim game session:", error);
+          formStatus.textContent = "We couldn't claim your score. Please try again.";
+          formStatus.classList.add("error");
+          formStatus.hidden = false;
+          submitButton.disabled = false;
+          buttonLabel.textContent = "Send verification link";
+        }
+      });
+
+      document.querySelector("#change-country").addEventListener("click", () => {
+        countrySelect.value = countryName.textContent;
+        countryDialog.showModal();
+      });
+
+      document.querySelector("#save-country").addEventListener("click", () => {
+        countryName.textContent = countrySelect.value;
+      });
+
+      createCaptcha();
+    </script>
+  </body>
+</html>
